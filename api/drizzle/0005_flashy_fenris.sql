@@ -1,0 +1,1 @@
+CREATE TYPE "public"."frequency_of_experience" AS ENUM('temporary', 'recurring', 'ongoing');

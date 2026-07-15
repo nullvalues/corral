@@ -1,0 +1,21 @@
+# docker-compose.yml
+#
+# App layer only — no database service.
+# The database is the operator's network instance at all times.
+# See docs/brief.md §"Accepted tradeoffs" and Phase 12 operator sign-off (2026-05-29).
+# Adding a postgres service here would silently introduce a local-infra dependency
+# that downstream forks would have to audit and remove.
+
+services:
+  asp:
+    image: asp:local
+    env_file: .env.production
+    ports:
+      - "6040:6040"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6040/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

@@ -1,0 +1,2 @@
+ALTER TABLE "mentor_grants" DROP CONSTRAINT "mentor_grants_requested_by_user_id_len";--> statement-breakpoint
+ALTER TABLE "mentor_grants" ADD CONSTRAINT "mentor_grants_requested_by_user_id_len" CHECK (char_length("mentor_grants"."requested_by_user_id") <= 255);

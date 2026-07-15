@@ -1,0 +1,2 @@
+ALTER TABLE "mentor_grants" ADD CONSTRAINT "mentor_grants_status_values" CHECK ("mentor_grants"."status" IN ('active', 'revoked'));--> statement-breakpoint
+ALTER TABLE "system_roles" ADD CONSTRAINT "system_roles_role_values" CHECK ("system_roles"."role" IN ('admin', 'applicant'));

@@ -1,0 +1,2 @@
+ALTER TABLE "readiness_config" ADD COLUMN "platinum_hours" integer DEFAULT 1000 NOT NULL;--> statement-breakpoint
+ALTER TABLE "readiness_config" ADD CONSTRAINT "readiness_config_platinum_hours_pos" CHECK ("readiness_config"."platinum_hours" > 0);

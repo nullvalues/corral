@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary palette — OSU orange (brand / CTA / progress fills) */
+  --color-primary-50:  #FFF7EF; /* highlight row */
+  --color-primary-100: #FFEEDD; /* orange tint bg */
+  --color-primary-200: #FFD8B5;
+  --color-primary-300: #FFBC85;
+  --color-primary-400: #FF9A4D;
+  --color-primary-500: #FF7300; /* OSU orange — brand / CTA / progress fill */
+  --color-primary-600: #E06200; /* CTA hover */
+  --color-primary-700: #D85E00; /* deep / hover */
+  --color-primary-800: #B24A00; /* pressed-on-tint */
+  --color-primary-900: #8A3A00;
+
+  /* Surface tokens */
+  --color-surface-base: oklch(99% 0 0);
+  --color-surface-card: oklch(97% 0 0);
+  --color-surface-muted: oklch(94% 0 0);
+
+  /* Text tokens */
+  --color-text-default: oklch(15% 0 0);
+  --color-text-muted: oklch(45% 0 0);
+  --color-text-inverted: oklch(99% 0 0);
+
+  /* Focus ring */
+  --color-focus-ring: oklch(65% 0.15 264);
+
+  /* Danger / error palette — red-toned */
+  --color-danger-50: oklch(97% 0.01 25);
+  --color-danger-100: oklch(93% 0.04 25);
+  --color-danger-500: oklch(58% 0.22 25);
+  --color-danger-600: oklch(50% 0.20 25);
+  --color-danger-700: oklch(42% 0.18 25);
+
+  --color-success-100: oklch(93% 0.05 150);
+  --color-success-500: oklch(58% 0.16 150);
+  --color-success-700: oklch(44% 0.14 150);
+
+  /* Warning / below-threshold palette — pending-amber (caution, NOT brand orange) */
+  --color-warning-50:  #FBF1DC; /* pending tint */
+  --color-warning-100: #F6E6C4;
+  --color-warning-500: #C99A2E;
+  --color-warning-600: #B5882A;
+  --color-warning-700: #A07A1F; /* pending foreground — used by .hours-below-threshold */
+
+  /* Typography (OSU Momentum) */
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+
+  /* Warm ink + neutral surfaces (OSU Momentum) */
+  --color-ink:       #14110F; /* near-black — primary text & dark surfaces */
+  --color-ink-soft:  #3A332D; /* secondary text */
+  --color-muted:     #8B8278; /* muted text */
+  --color-faint:     #ADA59A; /* faint text */
+  --color-app-bg:    #FAF7F4; /* warm off-white app background */
+  --color-card:      #FFFFFF; /* pure white card */
+  --color-chip:      #F4F0EA; /* chip / inactive surface */
+  --color-hairline:  #ECE5DD; /* hairline border */
+  --color-divider:   #F1ECE5; /* lighter divider */
+  --color-dashed:    #D8D0C6; /* dashed border */
+  --color-track:     #EFE9E2; /* progress track */
+
+  /* Status — verified (success) */
+  --color-success-fg: #1F8A4C;
+  --color-success-bg: #E6F3EB;
+
+  /* Status — pending / caution (amber, low-anxiety, NOT brand orange) */
+  --color-pending-fg: #A07A1F;
+  --color-pending-bg: #FBF1DC;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* All hours / dates / stat numerals: Bricolage + tabular figures */
+.numeral {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.hours-below-threshold {
+  color: var(--color-warning-700);
+  font-weight: 600;
+}

@@ -1,0 +1,7 @@
+ALTER TABLE "experiences" ADD CONSTRAINT "experiences_org_len" CHECK (char_length("experiences"."organization") <= 256);--> statement-breakpoint
+ALTER TABLE "experiences" ADD CONSTRAINT "experiences_position_len" CHECK (char_length("experiences"."position") <= 256);--> statement-breakpoint
+ALTER TABLE "experiences" ADD CONSTRAINT "experiences_narrative_len" CHECK (char_length("experiences"."duties_narrative") <= 8192);--> statement-breakpoint
+ALTER TABLE "experiences" ADD CONSTRAINT "experiences_contact_title_len" CHECK ("experiences"."contact_title" IS NULL OR char_length("experiences"."contact_title") <= 128);--> statement-breakpoint
+ALTER TABLE "experiences" ADD CONSTRAINT "experiences_contact_first_name_len" CHECK ("experiences"."contact_first_name" IS NULL OR char_length("experiences"."contact_first_name") <= 128);--> statement-breakpoint
+ALTER TABLE "experiences" ADD CONSTRAINT "experiences_contact_last_name_len" CHECK ("experiences"."contact_last_name" IS NULL OR char_length("experiences"."contact_last_name") <= 128);--> statement-breakpoint
+ALTER TABLE "experiences" ADD CONSTRAINT "experiences_contact_email_len" CHECK ("experiences"."contact_email" IS NULL OR char_length("experiences"."contact_email") <= 320);

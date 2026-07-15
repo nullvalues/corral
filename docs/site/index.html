@@ -1,0 +1,910 @@
+<!--
+  Generated from README.md, docs/development.md, and docs/operations.md.
+  This is the source of truth; do not hand-edit this file — re-distill from the markdown docs.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>asp — Documentation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fa;
+      --bg-tertiary: #f0f1f3;
+      --text-primary: #1a1a1a;
+      --text-secondary: #666666;
+      --border-color: #e0e0e0;
+      --link-color: #0066cc;
+      --code-bg: #f5f5f5;
+      --accent: #0066cc;
+      --accent-light: #e6f0ff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #262626;
+        --bg-tertiary: #333333;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --border-color: #404040;
+        --link-color: #66b3ff;
+        --code-bg: #2a2a2a;
+        --accent: #66b3ff;
+        --accent-light: #1a3a66;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-section {
+      padding: 0 16px;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-title {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      padding: 0 8px;
+    }
+
+    .sidebar-link {
+      display: block;
+      padding: 8px 12px;
+      margin-bottom: 4px;
+      color: var(--text-primary);
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+      font-size: 14px;
+    }
+
+    .sidebar-link:hover {
+      background-color: var(--accent-light);
+    }
+
+    .sidebar-link.active {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .content {
+      flex: 1;
+      padding: 48px 64px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      margin-top: 48px;
+    }
+
+    h1:first-child {
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+      scroll-margin-top: 80px;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      scroll-margin-top: 80px;
+    }
+
+    h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+
+    ul, ol {
+      margin-left: 24px;
+      margin-bottom: 16px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    a {
+      color: var(--link-color);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    a:hover {
+      border-bottom-color: var(--link-color);
+    }
+
+    code {
+      background-color: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+      font-size: 14px;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: var(--bg-tertiary);
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    tr:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    section {
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .section-intro {
+      background-color: var(--accent-light);
+      padding: 20px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .section-intro p {
+      margin-bottom: 0;
+    }
+
+    blockquote {
+      border-left: 4px solid var(--border-color);
+      padding-left: 16px;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin: 16px 0;
+    }
+
+    .doc-header {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 48px;
+      padding-top: 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .content {
+        padding: 32px 20px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Developers</div>
+        <a href="#" data-section="overview" class="sidebar-link active">Overview</a>
+        <a href="#" data-section="getting-started" class="sidebar-link">Getting started</a>
+        <a href="#" data-section="dev-setup" class="sidebar-link">Dev environment</a>
+        <a href="#" data-section="database" class="sidebar-link">Database</a>
+        <a href="#" data-section="running-dev" class="sidebar-link">Running dev stack</a>
+        <a href="#" data-section="tests" class="sidebar-link">Tests</a>
+        <a href="#" data-section="e2e-uat" class="sidebar-link">E2E & UAT</a>
+        <a href="#" data-section="openapi" class="sidebar-link">OpenAPI workflow</a>
+        <a href="#" data-section="troubleshooting" class="sidebar-link">Troubleshooting</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Operators</div>
+        <a href="#" data-section="prerequisites" class="sidebar-link">Prerequisites</a>
+        <a href="#" data-section="env-reference" class="sidebar-link">Configuration</a>
+        <a href="#" data-section="first-deploy" class="sidebar-link">First deploy</a>
+        <a href="#" data-section="upgrading" class="sidebar-link">Upgrading</a>
+        <a href="#" data-section="backup" class="sidebar-link">Backup & restore</a>
+        <a href="#" data-section="incident-response" class="sidebar-link">Incident response</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Reference</div>
+        <a href="#" data-section="stack" class="sidebar-link">Stack</a>
+        <a href="#" data-section="features" class="sidebar-link">Key features</a>
+      </div>
+    </div>
+
+    <div class="content">
+      <p class="doc-header">Generated from README.md, development.md, and operations.md. This is the source of truth; do not hand-edit this file — re-distill from the markdown docs.</p>
+
+      <!-- OVERVIEW -->
+      <section id="overview" class="active">
+        <h1>asp — Documentation</h1>
+
+        <div class="section-intro">
+          <p><strong>asp</strong> is a locked-stack, opinionated SPA template demonstrating disciplined defaults for single-tenant multi-user web applications. The working reference implementation is a skills-database for entry-level applicants.</p>
+        </div>
+
+        <h2>About asp</h2>
+        <p>asp is designed for developers building single-page applications that need multi-user auth with mandatory TOTP MFA, role-based access control (RBAC) and content-based access (ABAC), a modern strongly-typed data layer, and reference implementations of common patterns.</p>
+
+        <p>This documentation covers three audiences:</p>
+        <ul>
+          <li><strong>Developers</strong> — getting started, dev environment, running tests</li>
+          <li><strong>Operators</strong> — deployment, configuration, incident response</li>
+          <li><strong>Reference</strong> — stack and architecture overview</li>
+        </ul>
+
+        <p>For architectural decisions and deeper context, consult <code>docs/architecture.md</code> and <code>docs/ideology.md</code> in the repository.</p>
+      </section>
+
+      <!-- GETTING STARTED -->
+      <section id="getting-started">
+        <h1>Getting started</h1>
+
+        <h2>Quick start</h2>
+        <p>To spin up asp locally:</p>
+        <ol>
+          <li><code>git clone git@github.com:nullvalues/asp.git && cd asp</code></li>
+          <li><code>pnpm install</code></li>
+          <li>Create <code>.env.local</code> from <code>.env.example</code> and configure:
+            <ul>
+              <li><code>DATABASE_URL</code>: PostgreSQL 15+ connection string (local or remote)</li>
+              <li><code>BETTER_AUTH_*</code>: auth provider credentials</li>
+              <li>Other secrets as documented</li>
+            </ul>
+          </li>
+          <li><code>pnpm --filter @asp/api migrate:run</code> — apply migrations</li>
+          <li><code>pnpm seed:uat</code> — provision test accounts (requires API on <code>:6040</code>)</li>
+          <li><code>pnpm dev</code> — API on <code>:6040</code>, UI on <code>:6041</code></li>
+        </ol>
+
+        <h3>Port convention</h3>
+        <p>asp pins all dev servers to <strong>6040–6049</strong> for consistency. If you need to run an additional local service, pick an unused port inside 6042–6049 rather than outside the range.</p>
+      </section>
+
+      <!-- DEV SETUP -->
+      <section id="dev-setup">
+        <h1>Developer environment</h1>
+
+        <h2>Prerequisites</h2>
+        <ul>
+          <li><strong>Node.js 20+</strong></li>
+          <li><strong>pnpm</strong> — <code>npm install -g pnpm</code> if not already installed (<code>packageManager: pnpm@9.15.9</code> is pinned in the root <code>package.json</code>)</li>
+          <li>Access to a remote PostgreSQL instance (dev <strong>and</strong> test databases — asp does not use local Docker Postgres)</li>
+          <li><strong>Docker</strong> — only needed if you plan to build the production container image, or to run the UAT session-setup driver (Playwright/Chromium is launched internally by <code>pnpm uat:setup</code>)</li>
+        </ul>
+
+        <h2>Clone and install</h2>
+        <pre><code>git clone git@github.com:nullvalues/asp.git
+cd asp
+pnpm install</code></pre>
+        <p>This is a pnpm monorepo with two workspace packages: <code>api</code> (<code>@asp/api</code>) and <code>ui</code> (<code>@asp/ui</code>), plus root-level <code>e2e/</code> Playwright specs.</p>
+
+        <h2>Environment setup</h2>
+        <p>Copy the example env file and fill it in:</p>
+        <pre><code>cp .env.example .env.local</code></pre>
+
+        <p><code>.env.local</code> at the repo root is read by <code>pnpm dev</code> and by root-level scripts (<code>pnpm uat</code>, <code>pnpm uat:setup</code>, <code>pnpm seed:uat</code>). The <code>api/</code> package also reads its own <code>api/.env.local</code>.</p>
+
+        <p><strong>Important:</strong> Set <code>DATABASE_URL_TEST</code> in <code>api/.env.local</code> to a dedicated <strong>test</strong> database connection string — never the same database as <code>DATABASE_URL</code>. This is required for integration tests to pass. Without it, the integration test project's <code>globalSetup</code> will throw <code>Error: DATABASE_URL_TEST is required for integration tests</code> and the entire test suite will fail.</p>
+      </section>
+
+      <!-- DATABASE -->
+      <section id="database">
+        <h1>Database</h1>
+
+        <h2>Remote PostgreSQL only</h2>
+        <p>asp connects to a remote PostgreSQL server in every environment — there is no local Docker Postgres. Provision two databases: one for dev (<code>DATABASE_URL</code>), one dedicated to tests (<code>DATABASE_URL_TEST</code>).</p>
+
+        <h2>Migrations</h2>
+        <p>Migration files live in <code>api/drizzle/</code>, generated from the Drizzle schema in <code>api/src/db/schema/</code>:</p>
+        <pre><code>pnpm --filter @asp/api db:generate   # generate a new migration from schema changes</code></pre>
+
+        <p>Applying migrations is an operator action, not something a builder runs automatically. Two apply paths exist:</p>
+        <ul>
+          <li><code>pnpm --filter @asp/api db:migrate</code> — drizzle-kit's migrate command</li>
+          <li><code>pnpm --filter @asp/api migrate:run</code> — standalone script that applies migrations programmatically via <code>drizzle-orm/postgres-js/migrator</code>. This is the same mechanism the production container's ENTRYPOINT uses.</li>
+        </ul>
+
+        <h2>Database utilities</h2>
+        <pre><code>pnpm --filter @asp/api db:studio         # open Drizzle Studio against DATABASE_URL
+pnpm --filter @asp/api db:push           # push schema directly (no migration file) — dev convenience only
+pnpm --filter @asp/api db:test:clean     # DROP + recreate public/drizzle schemas, re-migrate — TEST DB ONLY
+pnpm --filter @asp/api db:test:truncate  # TRUNCATE all app tables RESTART IDENTITY CASCADE — TEST DB ONLY
+pnpm --filter @asp/api db:test:wipe      # DROP named tables CASCADE, re-migrate — TEST DB ONLY
+pnpm --filter @asp/api db:test:seed      # insert test reference data — TEST DB ONLY</code></pre>
+
+        <p>The <code>db:test:*</code> family is safety-guarded: every operation checks both <code>config.NODE_ENV === 'test'</code> <strong>and</strong> that the resolved database name contains <code>test</code> before running any SQL.</p>
+
+        <h2>Dev seeding</h2>
+        <p>Seed the VMCAS experience categories and other reference data into your dev database:</p>
+        <pre><code>pnpm --filter @asp/api db:seed      # or: pnpm --filter @asp/api seed:dev (identical script)</code></pre>
+
+        <p>Both scripts are idempotent (<code>onConflictDoNothing</code>) — safe to re-run.</p>
+      </section>
+
+      <!-- RUNNING DEV STACK -->
+      <section id="running-dev">
+        <h1>Running the dev stack</h1>
+
+        <pre><code>pnpm dev</code></pre>
+
+        <p>This runs <code>@asp/api</code> and <code>@asp/ui</code> concurrently:</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Port</th>
+              <th>Service</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>6040</td>
+              <td><code>@asp/api</code> (Fastify)</td>
+            </tr>
+            <tr>
+              <td>6041</td>
+              <td><code>@asp/ui</code> (Vite)</td>
+            </tr>
+            <tr>
+              <td>6042–6049</td>
+              <td>Reserved for asp dev services (unassigned)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>The Vite dev server proxies <code>/api/*</code> requests to <code>http://localhost:6040</code>, so the UI can be developed against the local API without CORS friction.</p>
+      </section>
+
+      <!-- TESTS -->
+      <section id="tests">
+        <h1>Tests</h1>
+
+        <h2>Build gate</h2>
+        <p>The build gate for this project is:</p>
+        <pre><code>pnpm typecheck && pnpm test</code></pre>
+
+        <p><code>pnpm test</code> is <code>pnpm -r --if-present test</code> — it runs <code>test</code> in every workspace package that defines one: <code>@asp/api</code> and <code>@asp/ui</code>.</p>
+
+        <h2>UI tests</h2>
+        <p><code>@asp/ui</code> <code>test</code> is <code>vitest --run</code> against jsdom-based component/unit tests. No database is involved.</p>
+
+        <h2>API tests</h2>
+        <p><code>@asp/api</code> <code>test</code> is <code>vitest --run</code> with <strong>no <code>--project</code> filter</strong>, which means it runs <strong>both</strong> Vitest projects defined in <code>api/vitest.config.ts</code>:</p>
+
+        <ul>
+          <li><strong>unit</strong> project — every <code>tests/**/*.test.ts</code> file except <code>*.integration.test.ts</code>. No database required to start the run.</li>
+          <li><strong>integration</strong> project — every <code>tests/**/*.integration.test.ts</code> file (plus <code>tests/api-integration.test.ts</code>). This project's <code>globalSetup</code> requires <code>DATABASE_URL_TEST</code> to be set in the real process environment. If it is <strong>not</strong> set, <code>globalSetup</code> throws <code>Error: DATABASE_URL_TEST is required for integration tests</code> and the process exits non-zero — <strong>there is no graceful skip</strong>.</li>
+        </ul>
+
+        <p>To iterate on API unit tests only, without touching a database:</p>
+        <pre><code>pnpm --filter @asp/api test:unit          # unit project only</code></pre>
+
+        <p>To run only the integration project (requires <code>DATABASE_URL_TEST</code>):</p>
+        <pre><code>pnpm --filter @asp/api test:integration</code></pre>
+      </section>
+
+      <!-- E2E & UAT -->
+      <section id="e2e-uat">
+        <h1>E2E & UAT harness</h1>
+
+        <p>Root-level Playwright config (<code>playwright.config.ts</code>) drives <code>e2e/*.spec.ts</code> and the UAT scenario harness under <code>e2e/uat/</code>.</p>
+
+        <h2>Seed stable UAT accounts</h2>
+        <p>Provision applicant, mentor, admin + a mentor grant + one sample experience:</p>
+        <pre><code>pnpm seed:uat</code></pre>
+
+        <p>This runs <code>api/src/db/seed.uat.ts</code> against <code>DATABASE_URL</code> and is idempotent (delete-and-recreate: it deletes and recreates all three UAT accounts and their app-owned rows on every run). It also writes the TOTP secrets sidecar file to <code>e2e/uat/.uat-secrets.json</code> (gitignored). This file is what <code>e2e/auth.spec.ts</code> and <code>e2e/uat/drivers/BetterAuthTotpDriver.ts</code> read to authenticate as the UAT accounts without manual TOTP entry.</p>
+
+        <h2>Provision Playwright sessions</h2>
+        <p>Provision sessions for all three roles:</p>
+        <pre><code>pnpm uat:setup</code></pre>
+
+        <p>This runs <code>e2e/uat/setup-all.ts</code>, which requires the API and UI dev servers already running (<code>pnpm dev</code>) plus <code>DATABASE_URL</code> set. It provisions admin → applicant → mentor sessions in that order and writes <code>storageState</code> JSON files and TOTP-secret sidecar files to <code>os.tmpdir()</code> — <strong>not</strong> to <code>e2e/uat/.uat-secrets.json</code>.</p>
+
+        <h2>Run Playwright directly</h2>
+        <pre><code>pnpm test:e2e          # playwright test — all e2e/*.spec.ts</code></pre>
+
+        <h2>Automated gate</h2>
+        <p>Run this before any human UAT session:</p>
+        <pre><code>pnpm uat</code></pre>
+
+        <p><code>e2e/uat/run-uat.ts</code> starts the dev servers, runs <code>pnpm seed:uat</code>, runs <code>pnpm uat:setup</code>, then runs <code>e2e/auth.spec.ts</code> and <code>e2e/workflow-smoke.spec.ts</code>, and tears everything down. Exit 0 means the automated gate passed.</p>
+      </section>
+
+      <!-- OPENAPI -->
+      <section id="openapi">
+        <h1>OpenAPI → typed client workflow</h1>
+
+        <p><code>ui/src/api-types.ts</code> is generated from the API's OpenAPI spec and committed to the repo — the UI never imports runtime code from <code>api/</code> (layer boundary). Regenerate it whenever an API route or Zod schema changes:</p>
+
+        <pre><code>pnpm --filter @asp/api generate:openapi    # writes api/openapi.json (local: --env-file=.env.local)
+pnpm --filter @asp/ui generate:types       # regenerates ui/src/api-types.ts from api/openapi.json</code></pre>
+
+        <p>CI uses <code>pnpm --filter @asp/api generate:openapi:ci</code> (plain <code>tsx</code>, env vars supplied by the CI runner) instead of the local variant, then runs a drift check to confirm the committed <code>ui/src/api-types.ts</code> matches what regeneration would produce — an uncommitted regeneration after a route change fails CI.</p>
+
+        <h2>When to regenerate</h2>
+        <p>Re-run both commands whenever you:</p>
+        <ul>
+          <li>Add, remove, or change a route path/method</li>
+          <li>Change a request or response Zod schema</li>
+          <li>Change an error-response shape</li>
+        </ul>
+      </section>
+
+      <!-- TROUBLESHOOTING -->
+      <section id="troubleshooting">
+        <h1>Troubleshooting</h1>
+
+        <h2>ConfigError at API startup</h2>
+        <p><code>api/src/lib/config.ts</code> validates env vars at module load time. Check the specific variable named in the error against the Configuration reference section below. The most common causes are a <code>SESSION_SECRET</code> shorter than 64 chars, an empty <code>ALLOWED_ORIGINS</code>, or a <code>PORT</code> outside <code>6040–6049</code>.</p>
+
+        <h2>pnpm test fails with "DATABASE_URL_TEST is required"</h2>
+        <p>Set <code>DATABASE_URL_TEST</code> in <code>api/.env.local</code> to a dedicated test database connection string, or run <code>pnpm --filter @asp/api test:unit</code> if you only need the unit project for now.</p>
+
+        <h2>Database unreachable / migration failed</h2>
+        <p>See the Incident response section below for the full remote-Postgres connectivity and migration failure runbooks — the causes and fixes are the same in dev as in production, since asp always talks to a remote Postgres instance.</p>
+
+        <h2>UAT sign-in fails / ".uat-secrets.json not found"</h2>
+        <p>Run <code>pnpm seed:uat</code> first — it must run before <code>pnpm uat:setup</code> or any UAT Playwright spec that authenticates via TOTP. If you've re-run <code>pnpm seed:uat</code> after an earlier <code>pnpm uat:setup</code>, TOTP factors were wiped; re-run <code>pnpm uat:setup</code> to re-provision sessions against the fresh accounts.</p>
+
+        <h2>UI shows stale/mismatched request or response shapes</h2>
+        <p>You likely changed an API route or schema without regenerating the typed client — see the OpenAPI workflow section above.</p>
+
+        <h2>CORS / 403 errors from the Vite dev proxy</h2>
+        <p>Confirm <code>ALLOWED_ORIGINS</code> includes <code>http://localhost:6041</code> in your <code>api/.env.local</code>.</p>
+      </section>
+
+      <!-- PREREQUISITES (OPS) -->
+      <section id="prerequisites">
+        <h1>Prerequisites</h1>
+
+        <ul>
+          <li><strong>Docker 20+</strong> installed locally for building container images</li>
+          <li><strong>PostgreSQL instance</strong> on your network or cloud provider (not local)</li>
+          <li><strong>pnpm</strong> (Node.js package manager) for local development; optional for Docker deployments</li>
+          <li><strong>curl</strong> (or equivalent HTTP client) for health checks; included in the container image</li>
+        </ul>
+      </section>
+
+      <!-- ENV REFERENCE -->
+      <section id="env-reference">
+        <h1>Configuration reference</h1>
+
+        <p>All env vars are read from <code>api/src/lib/config.ts</code>. The following table documents each variable with its type, requirement, default, and notes.</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Type</th>
+              <th>Required</th>
+              <th>Default</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>SESSION_SECRET</code></td>
+              <td>string (≥64 chars)</td>
+              <td>Yes</td>
+              <td>none</td>
+              <td>Generate with: <code>openssl rand -hex 32</code> twice, concatenate both (64 hex chars total). Validates at startup; malformed value exits non-zero. Treat as secret — never log or commit.</td>
+            </tr>
+            <tr>
+              <td><code>ALLOWED_ORIGINS</code></td>
+              <td>comma-separated URL list</td>
+              <td>Yes</td>
+              <td>none</td>
+              <td>Comma-separated allow-list of UI origins. CORS requests whose Origin is not a member of the list are rejected. Each entry is trimmed; trailing slash and default ports are normalised out at startup; every entry must be a valid URL and the list must be non-empty.</td>
+            </tr>
+            <tr>
+              <td><code>PORT</code></td>
+              <td>integer</td>
+              <td>No</td>
+              <td>6040</td>
+              <td>Port the API listens on. Must be in range 6040–6049 (project constraint). Validates at startup.</td>
+            </tr>
+            <tr>
+              <td><code>NODE_ENV</code></td>
+              <td>enum: development | test | production</td>
+              <td>No</td>
+              <td>development</td>
+              <td>Controls feature gates (e.g. MFA mandatory in production, console mailer forbidden in production).</td>
+            </tr>
+            <tr>
+              <td><code>MFA_ENABLED</code></td>
+              <td>boolean (true | false)</td>
+              <td>No</td>
+              <td>true</td>
+              <td>Mandatory TOTP-based multi-factor auth. MUST be true in production (enforced at config validation).</td>
+            </tr>
+            <tr>
+              <td><code>MFA_GRACE_HOURS</code></td>
+              <td>integer ≥0</td>
+              <td>No</td>
+              <td>24</td>
+              <td>Grace period (hours) before new users must enrol in TOTP. 0 = mandatory immediate enrolment.</td>
+            </tr>
+            <tr>
+              <td><code>DATABASE_URL</code></td>
+              <td>Postgres URL</td>
+              <td>Yes</td>
+              <td>none</td>
+              <td>Full connection string: <code>postgresql://user:password@host:5432/dbname</code>. Validates as URL at startup. Treat as secret.</td>
+            </tr>
+            <tr>
+              <td><code>STATIC_UI_ROOT</code></td>
+              <td>absolute filesystem path</td>
+              <td>No</td>
+              <td>unset</td>
+              <td>When set, the API serves the SPA from this directory (single-origin deployment). In the container, set to <code>/app/ui/dist</code>.</td>
+            </tr>
+            <tr>
+              <td><code>RATE_LIMIT_MAX</code></td>
+              <td>integer (positive)</td>
+              <td>No</td>
+              <td>10</td>
+              <td>Max requests per window for auth endpoints.</td>
+            </tr>
+            <tr>
+              <td><code>RATE_LIMIT_WINDOW_MS</code></td>
+              <td>integer (milliseconds, positive)</td>
+              <td>No</td>
+              <td>60000</td>
+              <td>Time window (milliseconds) for rate-limit counter. Default is 60 seconds (60000 ms).</td>
+            </tr>
+            <tr>
+              <td><code>MAILER_PROVIDER</code></td>
+              <td>enum: console | resend</td>
+              <td>No</td>
+              <td>console</td>
+              <td>Email delivery provider. console logs to stdout (dev/test only). resend wires the Resend service. Rejected in production (enforced at startup when NODE_ENV=production), unless CI=true.</td>
+            </tr>
+            <tr>
+              <td><code>MAILER_FROM</code></td>
+              <td>email address string</td>
+              <td>Conditional</td>
+              <td>unset</td>
+              <td>Sender address for outbound email. REQUIRED when MAILER_PROVIDER=resend; optional for console. Must be a valid email.</td>
+            </tr>
+            <tr>
+              <td><code>RESEND_API_KEY</code></td>
+              <td>string (API credential)</td>
+              <td>Conditional</td>
+              <td>unset</td>
+              <td>API key for Resend email service. REQUIRED when MAILER_PROVIDER=resend; ignored for console. Treat as secret.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Rate-limiter loopback bypass — topology constraint</h3>
+        <p>The rate limiter exempts loopback IPs (127.0.0.1, ::1, ::ffff:127.0.0.1) from all rate limits. This exemption relies on <code>trustProxy</code> being <strong>off</strong> (the current default), which means <code>request.ip</code> is always the raw socket peer address — a forged <code>X-Forwarded-For</code> header cannot spoof it.</p>
+
+        <p>If a same-host reverse proxy (nginx, Caddy, etc.) is added, all inbound connections arrive from 127.0.0.1, causing <code>request.ip</code> to return the proxy address for every request and silently disabling auth rate limiting for all callers. Before adding a same-host proxy, either set <code>trustProxy</code> and use a client-IP extraction strategy, or remove the loopback exemption from <code>rateLimiter.ts</code>.</p>
+      </section>
+
+      <!-- FIRST DEPLOY -->
+      <section id="first-deploy">
+        <h1>First deploy</h1>
+
+        <p>Follow these steps in order to bring up a fresh environment:</p>
+
+        <h2>1. Clone the repository</h2>
+        <pre><code>git clone https://github.com/your-org/asp.git
+cd asp</code></pre>
+
+        <h2>2. Create production environment file</h2>
+        <pre><code>cp .env.example .env.production</code></pre>
+        <p>Then edit <code>.env.production</code> with your values:</p>
+        <pre><code>SESSION_SECRET=&lt;64 random hex chars&gt;
+ALLOWED_ORIGINS=https://app.example.com
+NODE_ENV=production
+MFA_ENABLED=true
+DATABASE_URL=postgresql://asp_user:password@your-db-host:5432/asp
+MAILER_PROVIDER=resend
+MAILER_FROM=noreply@app.example.com
+RESEND_API_KEY=&lt;your-resend-key&gt;</code></pre>
+
+        <h2>3. Build the Docker image</h2>
+        <pre><code>docker build -t asp:local .</code></pre>
+        <p>This two-stage build installs all dev dependencies and builds the UI + API bundles, then creates a minimal runtime image with only production dependencies.</p>
+
+        <h2>4. Run database migrations</h2>
+        <pre><code>docker compose run --rm asp migrate</code></pre>
+        <p>Waits for the database to be reachable, then applies all pending migrations in <code>api/drizzle/</code>. If a migration fails, fix the issue (see Incident response) and retry this command.</p>
+
+        <h2>5. Seed the database</h2>
+        <pre><code>docker compose run --rm asp seed</code></pre>
+        <p>Inserts the VMCAS experience categories and other initial data. Safe to re-run (uses <code>onConflictDoNothing</code>).</p>
+
+        <h2>6. Create the first admin user</h2>
+        <pre><code>docker compose run --rm asp admin:promote --email=admin@example.com</code></pre>
+        <p>Inserts an <code>admin</code> role grant for the specified email. The user must first sign up via the web UI, then this command grants the role. Only admin users can manage experience categories and mentor grants.</p>
+
+        <h2>7. Start the service</h2>
+        <pre><code>docker compose up -d asp</code></pre>
+        <p>Starts the container in the background.</p>
+
+        <h2>8. Verify health</h2>
+        <pre><code>curl http://localhost:6040/api/health</code></pre>
+        <p>Should return <code>{"status":"ok"}</code> (HTTP 200). If the service is not ready, check the logs:</p>
+        <pre><code>docker compose logs -f asp</code></pre>
+      </section>
+
+      <!-- UPGRADING -->
+      <section id="upgrading">
+        <h1>Upgrading</h1>
+
+        <p>When deploying a new version of the application:</p>
+
+        <h2>1. Pull or download the new code</h2>
+        <pre><code>git pull origin main</code></pre>
+
+        <h2>2. Rebuild the Docker image (if the code changed)</h2>
+        <pre><code>docker build -t asp:local .</code></pre>
+
+        <h2>3. Run database migrations (if this version includes schema changes)</h2>
+        <pre><code>docker compose run --rm asp migrate</code></pre>
+        <p>Safe to run even if no migrations exist (exits cleanly). Always run this step before restart; do not rely on auto-migration.</p>
+
+        <h2>4. Restart the service</h2>
+        <pre><code>docker compose up -d asp</code></pre>
+        <p>The <code>restart: unless-stopped</code> policy will immediately bring the new version online.</p>
+
+        <h2>5. Verify health</h2>
+        <pre><code>curl http://localhost:6040/api/health</code></pre>
+      </section>
+
+      <!-- BACKUP & RESTORE -->
+      <section id="backup">
+        <h1>Backup & restore</h1>
+
+        <p>The asp container is <strong>stateless</strong> — all persistent state lives in the remote PostgreSQL database. No volumes or persistent mounts are used in the container.</p>
+
+        <h2>Backup strategy</h2>
+        <p>Use your PostgreSQL backup tooling (e.g. <code>pg_dump</code>, managed database snapshots, WAL archival):</p>
+        <pre><code>pg_dump postgresql://user:password@your-db-host:5432/asp > asp_backup.sql</code></pre>
+
+        <h2>Restore strategy</h2>
+        <p>Point asp at a restored Postgres instance by updating <code>DATABASE_URL</code> in <code>.env.production</code> and restarting the service. No application-layer restore steps are needed.</p>
+      </section>
+
+      <!-- INCIDENT RESPONSE -->
+      <section id="incident-response">
+        <h1>Incident response</h1>
+
+        <h2>Where to look first</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Symptom</th>
+              <th>Likely cause</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Container exits immediately at startup with an <code>Invalid environment configuration</code> message</td>
+              <td>Missing or invalid env var</td>
+            </tr>
+            <tr>
+              <td>Logs show <code>ECONNREFUSED</code> or <code>Database connection failed</code></td>
+              <td>API cannot reach PostgreSQL</td>
+            </tr>
+            <tr>
+              <td><code>docker compose run --rm asp migrate</code> exits with SQL errors</td>
+              <td>Bad migration file or inconsistent schema state</td>
+            </tr>
+            <tr>
+              <td><code>/api/health</code> does not return <code>{"status":"ok"}</code></td>
+              <td>Service not yet ready, or crashed on startup</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Config validation error</h2>
+
+        <p><strong>Symptom:</strong> Container exits immediately with error message like:</p>
+        <pre><code>Invalid environment configuration:
+  - SESSION_SECRET: value too short or too small
+  - ALLOWED_ORIGINS: failed validation rule</code></pre>
+
+        <p><strong>Cause:</strong> One or more required environment variables are missing or invalid.</p>
+
+        <p><strong>Fix:</strong></p>
+        <ol>
+          <li>Check <code>.env.production</code> for the missing variables listed in the error.</li>
+          <li>Verify values match the types in the Configuration reference table above.</li>
+          <li>For secrets like <code>SESSION_SECRET</code>, regenerate: <code>openssl rand -hex 32</code> (repeat twice and concatenate for ≥64 chars)</li>
+          <li>Rebuild and re-run: <code>docker build -t asp:local . && docker compose up -d asp</code></li>
+        </ol>
+
+        <h2>Database unreachable</h2>
+
+        <p><strong>Symptom:</strong> Logs show:</p>
+        <pre><code>Error: connect ECONNREFUSED (or similar connection error)
+Database connection failed</code></pre>
+
+        <p><strong>Cause:</strong> The API cannot reach the PostgreSQL instance specified in <code>DATABASE_URL</code>.</p>
+
+        <p><strong>Fix:</strong></p>
+        <ol>
+          <li>Verify the connection string in <code>.env.production</code>: <code>grep DATABASE_URL .env.production</code>. Format must be <code>postgresql://user:password@host:5432/dbname</code>.</li>
+          <li>Test connectivity from your deployment host to the database host: <code>nc -zv your-db-host 5432</code> (if <code>nc</code> is not available, use <code>telnet your-db-host 5432</code>)</li>
+          <li>Check firewall rules: ensure the database host allows inbound connections on port 5432 from the container's network.</li>
+          <li>Verify Postgres credentials are correct: test locally if possible: <code>psql postgresql://user:password@your-db-host:5432/asp -c "SELECT version();"</code></li>
+          <li>Once connectivity is confirmed, restart the service: <code>docker compose restart asp</code></li>
+        </ol>
+
+        <h2>Migration failed</h2>
+
+        <p><strong>Symptom:</strong> The <code>docker compose run --rm asp migrate</code> command exits with error output showing SQL syntax errors or constraint violations.</p>
+
+        <p><strong>Cause:</strong> A migration file is invalid, or the database schema is in an inconsistent state.</p>
+
+        <p><strong>Fix:</strong></p>
+        <ol>
+          <li>Inspect the error output from the failed migration command. The <code>api/drizzle/</code> directory contains all migrations in order (numbered <code>.sql</code> files).</li>
+          <li>Check database state to see which migrations have already been applied: <code>psql postgresql://user:password@your-db-host:5432/asp -c "SELECT * FROM drizzle_migrations;"</code>. Compare against the <code>.sql</code> files in <code>api/drizzle/</code> to identify which migration is failing.</li>
+          <li>If the failed migration is data-destructive, investigate the migration file itself: <code>cat api/drizzle/&lt;migration-name&gt;.sql</code>. If the migration introduces a breaking change and the database cannot be recovered, restore from backup.</li>
+          <li>If the migration is not data-destructive, fix the root cause (e.g. wrong connection string, missing disk space on DB host) and retry: <code>docker compose run --rm asp migrate</code></li>
+          <li>For persistent migration issues, contact the asp maintainers or create an issue on the project repository with the full error output and the output of <code>SELECT version();</code> from the database.</li>
+        </ol>
+      </section>
+
+      <!-- STACK -->
+      <section id="stack">
+        <h1>Stack</h1>
+
+        <p><strong>React 19 + Vite + TypeScript + Tailwind CSS</strong> (UI); <strong>Fastify + Drizzle + Better Auth + Zod</strong> (API); <strong>Vitest + Playwright</strong> (tests); <strong>pnpm workspaces</strong> (monorepo).</p>
+      </section>
+
+      <!-- FEATURES -->
+      <section id="features">
+        <h1>Key features</h1>
+
+        <p>The reference implementation includes:</p>
+
+        <ul>
+          <li><strong>Applicant surfaces</strong> — portfolio management with experience logging, milestone tracking, and resume/headshot uploads</li>
+          <li><strong>Mentor workspace</strong> — talent review, experience verification, and grant-based access to applicant data</li>
+          <li><strong>Admin dashboard</strong> — user and grant management, configuration controls</li>
+          <li><strong>Security</strong> — mandatory TOTP MFA, RBAC/ABAC access control, audit logging</li>
+          <li><strong>Developer experience</strong> — typed OpenAPI client (Zod + Better Auth), strict schema validation, comprehensive tests</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('[data-section]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = link.getAttribute('data-section');
+
+        // Hide all sections
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+
+        // Remove active class from all links
+        document.querySelectorAll('[data-section]').forEach(l => l.classList.remove('active'));
+
+        // Show selected section
+        document.getElementById(sectionId).classList.add('active');
+
+        // Add active class to clicked link
+        link.classList.add('active');
+
+        // Scroll to top
+        window.scrollTo(0, 0);
+      });
+    });
+  </script>
+</body>
+</html>

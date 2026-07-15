@@ -1,0 +1,29 @@
+# Test artefacts
+e2e/
+**/__tests__/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+**/__snapshots__/
+
+# Git metadata
+.git/
+.gitignore
+
+# Environment files (never bake secrets into the image)
+.env*
+**/.env*
+
+# Top-level node_modules (image installs its own)
+node_modules/
+
+# Documentation (not needed in the image)
+docs/
+*.md
+
+# Development tooling
+.eslintrc*
+.prettierrc*
+visual_model/
+product-spec/

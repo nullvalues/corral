@@ -1,0 +1,265 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    # TEST-001: Postgres service container available to all steps in this job.
+    # Integration tests use DATABASE_URL_TEST pointing at this container.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_USER: ci
+          POSTGRES_DB: asp_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: api typecheck
+        run: pnpm --filter @asp/api typecheck
+        env:
+          # 64-char fixture; not a real secret. Sourced from /dev/null padding.
+          # If a CI log ever leaks this value, no rotation is needed — it is
+          # documented as a fixture in INFRA-008.
+          SESSION_SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
+          ALLOWED_ORIGIN: http://localhost:6041
+          MFA_ENABLED: "true"
+          NODE_ENV: test
+
+      - name: api test
+        # TEST-001: runs test:unit (no DB required). Integration tests run in
+        # the dedicated "api integration tests" step below.
+        run: pnpm --filter @asp/api test:unit
+        env:
+          SESSION_SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
+          ALLOWED_ORIGIN: http://localhost:6041
+          MFA_ENABLED: "true"
+          NODE_ENV: test
+
+      - name: api integration tests
+        # TEST-001: runs *.integration.test.ts against the Postgres service container.
+        # globalSetup (tests/globalSetup.ts) applies all Drizzle migrations before
+        # the first test runs. Fails loud if DATABASE_URL_TEST is absent.
+        run: pnpm --filter @asp/api test:integration
+        env:
+          SESSION_SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
+          ALLOWED_ORIGIN: http://localhost:6040
+          MFA_ENABLED: "true"
+          DATABASE_URL: postgres://ci:ci@localhost:5432/asp_test
+          DATABASE_URL_TEST: postgres://ci:ci@localhost:5432/asp_test
+          NODE_ENV: test
+
+      - name: api lint
+        run: pnpm --filter @asp/api lint
+        env: {}
+
+      - name: ui typecheck
+        run: pnpm --filter @asp/ui typecheck
+        env: {}
+
+      - name: ui test
+        run: pnpm --filter @asp/ui test
+        env: {}
+
+      - name: ui lint
+        run: pnpm --filter @asp/ui lint
+        env: {}
+
+      - name: Verify OpenAPI and api-types.ts are in sync
+        run: |
+          pnpm --filter @asp/api generate:openapi:ci
+          pnpm --filter @asp/ui generate:types
+          git diff --exit-code api/openapi.json ui/src/api-types.ts
+        env:
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET || 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }}
+          ALLOWED_ORIGIN: http://localhost:3000
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
+          DATABASE_URL_TEST: postgresql://postgres:postgres@localhost:5432/test
+          PORT: "6040"
+          MFA_ENABLED: "true"
+          NODE_ENV: development
+
+  build-and-smoke:
+    runs-on: ubuntu-latest
+
+    # INFRA-029: Postgres service container for migrations and seed before smoke test.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_USER: ci
+          POSTGRES_DB: asp_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build Docker image
+        run: docker build -t asp:local .
+
+      - name: Run migrations
+        run: |
+          docker run --rm --network host \
+            -e DATABASE_URL=postgres://ci:ci@localhost:5432/asp_test \
+            asp:local migrate
+
+      - name: Run seed
+        run: |
+          docker run --rm --network host \
+            -e DATABASE_URL=postgres://ci:ci@localhost:5432/asp_test \
+            asp:local seed
+
+      - name: Start container
+        run: |
+          docker run -d --name asp-smoke --network host \
+            -e NODE_ENV=production \
+            -e DATABASE_URL=postgres://ci:ci@localhost:5432/asp_test \
+            -e SESSION_SECRET=0000000000000000000000000000000000000000000000000000000000000000 \
+            -e MFA_ENABLED=true \
+            -e PORT=6040 \
+            -e STATIC_UI_ROOT=/app/ui/dist \
+            -e MAILER_PROVIDER=resend \
+            -e RESEND_API_KEY=ci-dummy-key \
+            -e MAILER_FROM=ci@example.com \
+            -e ALLOWED_ORIGIN=http://localhost:6041 \
+            -e BETTER_AUTH_URL=http://localhost:6040 \
+            asp:local serve
+
+      - name: Wait for health
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:6040/api/health && break || sleep 1
+          done
+
+      - name: Dump container logs (debug)
+        if: always()
+        run: docker logs asp-smoke || true
+
+      - name: Assert health endpoint returns 200
+        run: curl -sf http://localhost:6040/api/health
+
+      - name: Assert UI root returns text/html
+        run: |
+          curl -sf -I http://localhost:6040/ | grep -i "content-type: text/html"
+
+      - name: Teardown
+        if: always()
+        run: docker stop asp-smoke && docker rm asp-smoke
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [ci]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_USER: ci
+          POSTGRES_DB: asp_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build Docker image
+        run: docker build -t asp:local .
+
+      - name: Run migrations
+        run: |
+          docker run --rm --network host \
+            -e DATABASE_URL=postgres://ci:ci@localhost:5432/asp_test \
+            asp:local migrate
+
+      - name: Run seed
+        run: |
+          docker run --rm --network host \
+            -e DATABASE_URL=postgres://ci:ci@localhost:5432/asp_test \
+            asp:local seed
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm test:e2e
+        env:
+          CI: "true"
+          BASE_URL: http://localhost:6040
+          API_BASE: http://localhost:6040
+          DATABASE_URL: postgres://ci:ci@localhost:5432/asp_test
+          CONTAINER_IMAGE: asp:local
+          NODE_ENV: production
+          SESSION_SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
+          MFA_ENABLED: "true"
+          PORT: "6040"
+          STATIC_UI_ROOT: /app/ui/dist
+          MAILER_PROVIDER: console
+          MAILER_FROM: ci@example.com
+          ALLOWED_ORIGIN: http://localhost:6040
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
