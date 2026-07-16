@@ -1,4 +1,4 @@
-# CLAUDE.md — asp
+# CLAUDE.md — Corral Talent
 
 > Stack: React 19 + Vite + TypeScript + TailwindCSS (SPA); Fastify + Drizzle ORM + Better Auth (API); Vitest + Playwright; pnpm monorepo.
 

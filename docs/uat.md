@@ -1,4 +1,4 @@
-# asp UAT Runbook
+# Corral Talent UAT Runbook
 
 This document is the entry point for manual User Acceptance Testing (UAT). It covers environment setup, TOTP onboarding, and a table of contents linking to the four scenario documents. Read this document in full before running any scenario.
 
@@ -88,7 +88,7 @@ This starts the API on `http://localhost:6040` and the UI on `http://localhost:6
 
 ## Setting up TOTP for each role
 
-Because asp requires TOTP (two-factor authentication) for all accounts, each UAT session must be provisioned with an authenticator-app secret before scenarios can be run.
+Because Corral Talent requires TOTP (two-factor authentication) for all accounts, each UAT session must be provisioned with an authenticator-app secret before scenarios can be run.
 
 **Run the setup script once** (after the seed and with both servers running):
 
@@ -115,7 +115,7 @@ On Linux/macOS, `<os.tmpdir()>` is `/tmp`. On Windows it is typically `C:\Users\
 
 1. Open the relevant sidecar file. It contains a plain text string such as `JBSWY3DPEHPK3PXP`.
 2. Open **Google Authenticator**: tap `+` → **Enter a setup key**.
-   - Account name: enter anything (e.g. `asp-uat-applicant`).
+   - Account name: enter anything (e.g. `corral-uat-applicant`).
    - Key: paste the string from the sidecar file.
    - Tap **Add**.
 3. Open **Authy**: tap `+` → **Enter key manually**.

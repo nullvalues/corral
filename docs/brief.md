@@ -1,4 +1,4 @@
-# Brief — asp
+# Brief — Corral Talent
 
 > This is a one-page project brief. It answers **what** and **why**.
 > Design decisions and implementation choices belong in `docs/architecture.md`.
@@ -8,7 +8,7 @@
 
 ## What this project produces
 
-asp is a reusable single-page-app template paired with a working reference
+Corral Talent is a reusable single-page-app template paired with a working reference
 implementation. It ships configured for a specific stack (React + Vite + TypeScript
 + Tailwind 4 on the UI; Fastify + Drizzle + Better Auth + Zod on the API; Vitest
 + Playwright for tests; pnpm workspaces) and demonstrates the patterns the
@@ -18,7 +18,7 @@ operator considers correct for multi-user SPAs.
 
 ## Why it exists
 
-A personal reference implementation. asp captures, in working code, the
+A personal reference implementation. Corral Talent captures, in working code, the
 conventions the operator has converged on across previous projects (radar, aab) —
 so that future projects in this family can be started from a known-disciplined
 baseline rather than re-derived each time. Forks pick up the conventions; this
@@ -41,13 +41,13 @@ Value hierarchy sections). The headline:
 
 ## Accepted tradeoffs
 
-- **Strict discipline over DX convenience.** asp commits to remote-only
+- **Strict discipline over DX convenience.** Corral Talent commits to remote-only
   infrastructure, mandatory MFA, dual-layer bounds, and generated API types —
   knowing each costs developer ergonomics. The teaching value of the disciplined
   reference is worth the friction.
-- **Locked stack over flexibility.** asp is opinionated about exactly which
+- **Locked stack over flexibility.** Corral Talent is opinionated about exactly which
   libraries it uses. A template that "supports any stack" teaches no concrete
-  pattern; asp teaches by demonstrating one stack fully.
+  pattern; Corral Talent teaches by demonstrating one stack fully.
 - **Generated `api-types.ts` over a shared package.** Trades dev-loop
   convenience (Zod schemas can't cross the boundary as code) for the cleaner
   "API is a contract" lesson and a language-agnostic server option.
@@ -84,7 +84,7 @@ These operator constraints shape every build decision in this project:
 - **Drizzle schema is PROTECTED.** `/api/src/db/schema/` is modified only by
   stories that explicitly name a schema change; every change generates a
   drizzle-kit migration and an ADR-style note in `docs/architecture.md`.
-- **Dev port range is 6040–6049.** No asp dev process binds a port outside
+- **Dev port range is 6040–6049.** No Corral Talent dev process binds a port outside
   this range. (Sits adjacent to radar's 6010–6019.)
 
 ---
@@ -96,10 +96,10 @@ These operator constraints shape every build decision in this project:
   local Minio, local Redis)
 - Offline-first or local-first sync
 - Authentication systems other than Better Auth
-- Stack divergence within asp itself — downstream forks may diverge, but the
+- Stack divergence within Corral Talent itself — downstream forks may diverge, but the
   template's locked stack is non-negotiable for the reference
-- Multi-tenant data partitioning — asp is single-tenant multi-user; a fork that
-  needs workspaces inherits radar's model, not asp's
+- Multi-tenant data partitioning — Corral Talent is single-tenant multi-user; a fork that
+  needs workspaces inherits radar's model, not Corral Talent's
 
 ---
 
@@ -107,7 +107,7 @@ These operator constraints shape every build decision in this project:
 
 The irreducible requirements are listed in `docs/ideology.md` under
 "Reconstruction guidance → Must preserve." An implementation that omits any of
-those items is not asp.
+those items is not Corral Talent.
 
 The headline must-preserve items: Better Auth owns identity; mandatory MFA after
 grace; RBAC + ABAC coexisting as separate enforcement layers; one-directional

@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import type { ReactElement } from 'react';
 import { MentorLevelBadge } from '../components/MentorLevelBadge.js';
+import { BrandMark } from '../components/BrandMark.js';
 
 const iconProps = {
   width: 20,
@@ -47,10 +48,8 @@ export function MentorWorkspaceLayout(): ReactElement {
   return (
     <div className="flex min-h-screen w-full bg-app-bg">
       <aside className="flex w-[226px] shrink-0 flex-col bg-ink px-3 py-5 max-[900px]:w-16 max-[900px]:px-2">
-        {/* D9: typographic "O" brand placeholder — must be replaced with the
-            official OSU lockup before real use. */}
         <div className="mb-6 flex items-center gap-2 px-2">
-          <span className="font-display text-2xl font-bold leading-none text-white">O</span>
+          <BrandMark tone="orange" size={22} />
           <span className="font-display text-sm font-semibold text-white max-[900px]:hidden">
             Mentor
           </span>

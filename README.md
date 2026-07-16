@@ -1,4 +1,4 @@
-# asp
+# Corral Talent
 
 A locked-stack, opinionated SPA template demonstrating disciplined defaults for
 single-tenant multi-user web applications. The working reference implementation
@@ -41,7 +41,7 @@ React 19 + Vite + TypeScript + Tailwind CSS (UI); Fastify + Drizzle + Better Aut
 5. `pnpm seed:uat` — provision test accounts (requires API on `:6040`)
 6. `pnpm dev` — API on `:6040`, UI on `:6041`
 
-**Port note**: asp pins all dev servers to **6040–6049** for consistency.
+**Port note**: Corral Talent pins all dev servers to **6040–6049** for consistency.
 
 ## Documentation
 

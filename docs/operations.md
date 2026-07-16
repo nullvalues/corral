@@ -1,4 +1,4 @@
-# Operations Runbook — asp
+# Operations Runbook — Corral Talent
 
 ## 1. Prerequisites
 
@@ -151,7 +151,7 @@ When deploying a new version of the application:
 
 ## 5. Backup & restore
 
-The asp container is **stateless** — all persistent state lives in the remote PostgreSQL database. No volumes or persistent mounts are used in the container.
+The Corral Talent container is **stateless** — all persistent state lives in the remote PostgreSQL database. No volumes or persistent mounts are used in the container.
 
 **Backup strategy:**
 
@@ -163,7 +163,7 @@ pg_dump postgresql://user:password@your-db-host:5432/asp > asp_backup.sql
 
 **Restore strategy:**
 
-Point asp at a restored Postgres instance by updating `DATABASE_URL` in `.env.production` and restarting the service. No application-layer restore steps are needed.
+Point Corral Talent at a restored Postgres instance by updating `DATABASE_URL` in `.env.production` and restarting the service. No application-layer restore steps are needed.
 
 ---
 
@@ -267,6 +267,6 @@ Database connection failed
    docker compose run --rm asp migrate
    ```
 
-5. **For persistent migration issues**, contact the asp maintainers or create an issue on the project repository with the full error output and the output of `SELECT version();` from the database.
+5. **For persistent migration issues**, contact the Corral Talent maintainers or create an issue on the project repository with the full error output and the output of `SELECT version();` from the database.
 
 ---

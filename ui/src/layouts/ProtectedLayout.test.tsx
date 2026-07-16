@@ -145,13 +145,14 @@ describe('ProtectedLayout', () => {
     expect(navigateMock).not.toHaveBeenCalled();
   });
 
-  it('shows the asp brand link for all roles', async () => {
+  it('shows the Corral Talent brand link for all roles', async () => {
     mockSessionAndMe(['applicant']);
 
     renderProtectedLayout();
 
-    const brandLink = await screen.findByRole('link', { name: 'asp' });
+    const brandLink = await screen.findByRole('link', { name: 'Corral Talent home' });
     expect(brandLink).toHaveAttribute('href', '/');
+    expect(screen.queryByText('asp')).not.toBeInTheDocument();
   });
 
   it('shows an Experiences nav link for an applicant/mentor (non-admin)', async () => {
@@ -176,12 +177,12 @@ describe('ProtectedLayout', () => {
     expect(experiencesLink).toHaveAttribute('href', '/experiences');
   });
 
-  it('shows the asp brand link for an admin', async () => {
+  it('shows the Corral Talent brand link for an admin', async () => {
     mockSessionAndMe(['admin']);
 
     renderProtectedLayout();
 
-    const brandLink = await screen.findByRole('link', { name: 'asp' });
+    const brandLink = await screen.findByRole('link', { name: 'Corral Talent home' });
     expect(brandLink).toHaveAttribute('href', '/');
   });
 

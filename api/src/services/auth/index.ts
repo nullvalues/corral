@@ -93,7 +93,7 @@ export function buildAuthConfig(isProduction: boolean, allowedOrigins: string[] 
       // without a password. Email+password users must still supply their password
       // when calling two-factor/enable (BA's shouldRequirePassword returns true
       // when a credential account with a password exists).
-      twoFactor({ issuer: 'asp', allowPasswordless: true }),
+      twoFactor({ issuer: 'Corral Talent', allowPasswordless: true }),
     ],
     databaseHooks: {
       user: {

@@ -1,4 +1,4 @@
-# asp — Developer Standup Guide
+# Corral Talent — Developer Standup Guide
 
 This is the day-to-day developer runbook: get the stack running locally, run
 the test suites correctly, and keep the generated OpenAPI client in sync.
@@ -12,7 +12,7 @@ for manual QA read `docs/uat.md`.
 
 - **Node.js 20+**
 - **pnpm** — `npm install -g pnpm` if not already installed (`packageManager: pnpm@9.15.9` is pinned in the root `package.json`)
-- Access to a remote PostgreSQL instance (dev **and** test databases — asp does not use local Docker Postgres; see `docs/brief.md` "Constraints")
+- Access to a remote PostgreSQL instance (dev **and** test databases — Corral Talent does not use local Docker Postgres; see `docs/brief.md` "Constraints")
 - **Docker** — only needed if you plan to build the production container image, or to run the UAT session-setup driver (Playwright/Chromium is launched internally by `pnpm uat:setup`)
 
 ---
@@ -68,7 +68,7 @@ behaviour non-uniformly (see Section 6 for the full explanation):
 
 ## 4. Database
 
-asp connects to a remote PostgreSQL server in every environment — there is no
+Corral Talent connects to a remote PostgreSQL server in every environment — there is no
 local Docker Postgres. Provision two databases: one for dev (`DATABASE_URL`),
 one dedicated to tests (`DATABASE_URL_TEST`).
 
@@ -134,9 +134,9 @@ This runs `@asp/api` and `@asp/ui` concurrently:
 |------|---------|
 | 6040 | `@asp/api` (Fastify) |
 | 6041 | `@asp/ui` (Vite) |
-| 6042–6049 | Reserved for asp dev services (unassigned) |
+| 6042–6049 | Reserved for Corral Talent dev services (unassigned) |
 
-All asp dev servers must bind in the **6040–6049** range — this is a project
+All Corral Talent dev servers must bind in the **6040–6049** range — this is a project
 convention enforced for `PORT` at the config-validation layer (`api/src/lib/config.ts`
 rejects a `PORT` outside that range at startup). If you need to run an
 additional local service (a mock, a worker, etc.), pick an unused port inside
@@ -304,7 +304,7 @@ now.
 **Database unreachable / migration failed.** See `docs/operations.md` §
 "6. Incident response" for the full remote-Postgres connectivity and migration
 failure runbooks — the causes and fixes are the same in dev as in
-production, since asp always talks to a remote Postgres instance.
+production, since Corral Talent always talks to a remote Postgres instance.
 
 **UAT sign-in fails / "`.uat-secrets.json` not found".** Run `pnpm
 seed:uat` first — it must run before `pnpm uat:setup` or any UAT Playwright

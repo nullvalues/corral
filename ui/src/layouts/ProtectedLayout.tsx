@@ -5,6 +5,7 @@ import { queryKeys } from '../lib/queryKeys.js';
 import { useMe } from '../hooks/useMe.js';
 import { ApplicantPicker } from '../components/ApplicantPicker.js';
 import { NotificationBell } from '../components/NotificationBell.js';
+import { BrandMark } from '../components/BrandMark.js';
 
 interface Session {
   user: {
@@ -79,8 +80,13 @@ export function ProtectedLayout() {
       {!meLoading && (
         <header className="flex items-center justify-between border-b border-surface-muted px-4 py-2">
           <nav className="flex items-center gap-4">
-            <Link to="/" className="text-sm text-text-default">
-              asp
+            <Link to="/" className="text-sm text-text-default" aria-label="Corral Talent home">
+              <span className="flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-500">
+                  <BrandMark tone="white" size={18} />
+                </span>
+                <span className="font-display text-[13px] font-bold text-ink">Corral Talent</span>
+              </span>
             </Link>
             {isAdmin ? (
               <>

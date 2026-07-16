@@ -1,14 +1,14 @@
-# asp — Architecture
+# Corral Talent — Architecture
 
-## What asp is
+## What Corral Talent is
 
-asp is a locked-stack, single-tenant multi-user SPA template. The working reference
+Corral Talent is a locked-stack, single-tenant multi-user SPA template. The working reference
 implementation is a skills database for entry-level applicants (resume-style
-experiences across categories). Downstream forks adapt the patterns; asp demonstrates
+experiences across categories). Downstream forks adapt the patterns; Corral Talent demonstrates
 the disciplined version. See `docs/brief.md` (what and why) and `docs/ideology.md`
 (convictions and constraints).
 
-This document is the source of truth for the asp codebase. Read it before any task.
+This document is the source of truth for the Corral Talent codebase. Read it before any task.
 
 ---
 
@@ -389,9 +389,9 @@ asp/
 │       │   ├── milestones.ts        # STRUCTURAL milestone display metadata + types for the PM034 dashboard (Decision 3). API-064 removed the hour-threshold mirror: hour milestones are operator-configured server-side (milestone_config) and arrive fully evaluated via GET /api/me/milestones (useMyMilestones) — the client no longer re-derives them (supersedes ADR-041 for hour milestones). Exports MilestoneCtx, MilestoneResult ({key, label, earned, remainingLabel}), the MILESTONES definition list (structural only: first experience; first verified; all verified; 1/2/all goal categories met; 3+ categories breadth — NO hours-* entries), and evaluateMilestones(ctx) → MilestoneResult[] (retained as structural display metadata; authoritative earned state for all milestones comes from the API). "all verified" / "all goals met" are locked when their total is 0 (not vacuously earned). UI-067, API-064.
 │       │   └── mentorLevel.ts       # Pure functions and threshold constants for mentor level derivation. `PLATINUM_HOURS = 1000` — backward-compat default export. `mentorLevel(lifetimeHours, platinumHours = 1000) → 'Gold' | 'Platinum'` (UI-072). `hoursToNextLevel(lifetimeHours, platinumHours = 1000) → number | null` — returns `Math.max(0, platinumHours - lifetimeHours)` below threshold, `null` at/above Platinum (UI-082). Both functions accept an optional `platinumHours` param so call sites pass the operator-configured value from `useReadinessConfig()` — API-063.
 │       ├── layouts/
-│       │   ├── ProtectedLayout.tsx  # session gate: no-session → /sign-in; unenrolled → /enrol; mounts a persistent app header (brand link "asp" → /; role-aware nav: admins → /admin + /experiences, applicant/mentor → /experiences; plus a sign-out button — UI-028, UI-040) above the ApplicantPicker top bar (UI-020). UI-097: conditionally renders a "Mentor workspace" link → /mentor for any user where useMe().hasMentorGrants is true (admin or not), after the Admin/Experiences links — grant holders get a nav path to the workspace instead of typing the URL. In the PM034+ navigation IA, the persistent header's "Experiences" link for non-admin users coexists with the ApplicantLayout BottomTabBar; the header is the legacy top nav, BottomTabBar is the primary applicant nav. UI-103: persistent header always includes an "Account settings" link → /settings (after the Mentor workspace link when present) for all authenticated users. UI-105: renders <NotificationBell /> in the header adjacent to the sign-out button.
+│       │   ├── ProtectedLayout.tsx  # session gate: no-session → /sign-in; unenrolled → /enrol; mounts a persistent app header (brand link "Corral Talent" → /; role-aware nav: admins → /admin + /experiences, applicant/mentor → /experiences; plus a sign-out button — UI-028, UI-040) above the ApplicantPicker top bar (UI-020). UI-097: conditionally renders a "Mentor workspace" link → /mentor for any user where useMe().hasMentorGrants is true (admin or not), after the Admin/Experiences links — grant holders get a nav path to the workspace instead of typing the URL. In the PM034+ navigation IA, the persistent header's "Experiences" link for non-admin users coexists with the ApplicantLayout BottomTabBar; the header is the legacy top nav, BottomTabBar is the primary applicant nav. UI-103: persistent header always includes an "Account settings" link → /settings (after the Mentor workspace link when present) for all authenticated users. UI-105: renders <NotificationBell /> in the header adjacent to the sign-out button.
 │       │   ├── ApplicantLayout.tsx  # applicant app-shell: scrolling <Outlet /> in a centered max-w-[640px] column on bg-app-bg above a fixed BottomTabBar. Wraps /home, /experiences, /mentor-status, /profile. UI-063 (mentor-status route renamed from /mentor in UI-071).
-│       │   ├── MentorWorkspaceLayout.tsx  # B1 mentor desktop workspace shell (UI-071): fixed 226px dark sidebar (bg-ink) with "O" brand placeholder (D9) + nav (Dashboard NavLink → /mentor end, Talent pool NavLink → /mentor/talent-pool — UI-098) + bottom level-card slot (data-testid mentor-level-card) rendering <MentorLevelBadge /> (UI-082, D6); 64px white top bar (bg-card, hairline border); bg-app-bg <main> with <Outlet />. Collapses to a 64px icon rail below 900px (max-[900px]: utilities). Unimplemented items (My applicants, Verification queue, Reports) are hidden entirely until their feature phases ship. Root of /mentor.
+│       │   ├── MentorWorkspaceLayout.tsx  # B1 mentor desktop workspace shell (UI-071): fixed 226px dark sidebar (bg-ink) with the Corral Talent brand mark (BrandMark, replacing the D9 "O" placeholder) + nav (Dashboard NavLink → /mentor end, Talent pool NavLink → /mentor/talent-pool — UI-098) + bottom level-card slot (data-testid mentor-level-card) rendering <MentorLevelBadge /> (UI-082, D6); 64px white top bar (bg-card, hairline border); bg-app-bg <main> with <Outlet />. Collapses to a 64px icon rail below 900px (max-[900px]: utilities). Unimplemented items (My applicants, Verification queue, Reports) are hidden entirely until their feature phases ship. Root of /mentor.
 │       │   ├── AdminLayout.tsx      # RBAC gate: non-admin → /experiences; wraps /admin sub-routes
 │       │   └── MentorScopeLayout.tsx    # ABAC scope gate: asserts active grant; provides MentorContext. UI-021.
 │       ├── hooks/
@@ -625,10 +625,10 @@ These files are working and must not be modified without a stated reason:
 |------|---------|
 | 6040 | @asp/api (Fastify) |
 | 6041 | @asp/ui (Vite) |
-| 6042–6049 | Reserved for asp dev services (unassigned) |
+| 6042–6049 | Reserved for Corral Talent dev services (unassigned) |
 
-All asp dev servers must bind in the 6040–6049 range (constraint from
-`docs/brief.md` and `docs/ideology.md`). No asp dev process may use a port
+All Corral Talent dev servers must bind in the 6040–6049 range (constraint from
+`docs/brief.md` and `docs/ideology.md`). No Corral Talent dev process may use a port
 outside this range.
 
 ---
@@ -721,7 +721,7 @@ it breaks the layer model (HIGH finding in AUTH-004 attempt 1).
 **Status:** Accepted (2026-05-23, Phase 2)
 
 **Context:**
-asp needs identity (signup, signin, sessions, MFA). Two paths:
+Corral Talent needs identity (signup, signin, sessions, MFA). Two paths:
 own the schema ourselves, or delegate to a library.
 
 **Decision:**
@@ -743,11 +743,11 @@ Better Auth owns `users`, `sessions`, `accounts`, `verification`.
 **Alternatives considered:**
 - **Own the users table ourselves:** rejected. Identity is high-risk
   surface area; reimplementing it duplicates BA's correct work and
-  introduces drift between asp's model and BA's evolving defaults.
-- **Auth.js / NextAuth:** rejected. asp is Fastify-first; BA's
+  introduces drift between Corral Talent's model and BA's evolving defaults.
+- **Auth.js / NextAuth:** rejected. Corral Talent is Fastify-first; BA's
   Fastify-native integration is cleaner; BA's Drizzle adapter avoids
   a parallel ORM.
-- **Redis-backed sessions:** rejected for asp itself. One fewer infra
+- **Redis-backed sessions:** rejected for Corral Talent itself. One fewer infra
   dependency. Downstream forks needing pub/sub may swap.
 
 **Ideology entries codified:** `docs/ideology.md` — single-library
@@ -1044,7 +1044,7 @@ the pool level.
 
 **Decision:** `system_roles.role` is constrained to `('admin', 'applicant')` and `mentor_grants.status` is constrained to `('active', 'revoked')` via named DB CHECK constraints (`system_roles_role_values` and `mentor_grants_status_values` respectively). These are added via migration `0013_rare_punisher.sql`.
 
-**Rationale:** The asp ideology requires every text column to have a max-length or value CHECK. Both columns were initially introduced in Phase 4 (DB-003/DB-004) with only application-layer convention enforcing valid values. Adding DB-level CHECKs closes CER-005 by ensuring that no direct DB insert (bypassing the API) can store an invalid role or status. The value sets are small and fixed — `role` has two valid values (`admin`, `applicant`) and `status` has two valid values (`active`, `revoked`). Using a text CHECK rather than a Postgres enum avoids the `ALTER TYPE ... ADD VALUE` migration complexity if values are added later, while still providing DB-level enforcement.
+**Rationale:** The Corral Talent ideology requires every text column to have a max-length or value CHECK. Both columns were initially introduced in Phase 4 (DB-003/DB-004) with only application-layer convention enforcing valid values. Adding DB-level CHECKs closes CER-005 by ensuring that no direct DB insert (bypassing the API) can store an invalid role or status. The value sets are small and fixed — `role` has two valid values (`admin`, `applicant`) and `status` has two valid values (`active`, `revoked`). Using a text CHECK rather than a Postgres enum avoids the `ALTER TYPE ... ADD VALUE` migration complexity if values are added later, while still providing DB-level enforcement.
 
 **Why not native enum:** `frequency_of_experience` (ADR-011) uses a native enum because its values are VMCAS vocabulary terms that are operator-confirmed stable. `system_roles.role` and `mentor_grants.status` are app-internal control values that may expand (e.g., a future `mentor` role or a `suspended` grant status). Text CHECKs are easier to evolve — adding a value is a simple `ALTER TABLE ... ADD CONSTRAINT ... CHECK (... IN (...))` after dropping the old constraint, whereas enum value additions require exclusive-lock DDL.
 
@@ -1101,7 +1101,7 @@ the pool level.
 
 All five are NOT NULL columns; no `IS NULL OR` guard is needed (contrast with nullable PII columns per ADR-013/ADR-015). The 255-char bound matches the existing `pii_access_log.actor_user_id` / `subject_user_id` CHECKs (DB-016) and comfortably exceeds any plausible BA-generated ID format (nanoid ≤ 21 chars, UUID = 36 chars).
 
-**Rationale:** The asp ideology mandates "every text column has a max-length CHECK." Without these CHECKs, a malformed or adversarial soft-reference value (e.g. a smuggled 1-MB string) could be written by a future bug or by a direct DB insert that bypasses application validation, with no defence at the DB layer. The 255-char bound is the project standard for BA-identity soft references; future app-owned tables that hold a `users.id` soft reference must follow the same pattern.
+**Rationale:** The Corral Talent ideology mandates "every text column has a max-length CHECK." Without these CHECKs, a malformed or adversarial soft-reference value (e.g. a smuggled 1-MB string) could be written by a future bug or by a direct DB insert that bypasses application validation, with no defence at the DB layer. The 255-char bound is the project standard for BA-identity soft references; future app-owned tables that hold a `users.id` soft reference must follow the same pattern.
 
 **Migration:** `0014_skinny_king_cobra.sql` adds the five CHECK constraints. Because all referenced columns currently hold BA-generated values well under 255 chars, the migration applies without any data backfill or validation failures against existing rows.
 
@@ -1132,7 +1132,7 @@ All five are NOT NULL columns; no `IS NULL OR` guard is needed (contrast with nu
 
 **Decision:** Production deployment is a single container. The API serves the built UI via `@fastify/static` (ADR-024). `docker-compose.yml` contains the app service only — no Postgres service. HTTPS is terminated by the host platform. The `PORT` environment variable must be in the range 6040–6049. Lifecycle operations (migrations, seeding, admin promotion) dispatch via ENTRYPOINT to `migrate`, `serve`, `seed`, or `admin:promote` subcommands.
 
-**Rationale:** A Postgres service in compose would introduce a local-infra dependency that downstream forks would have to audit and remove to avoid accidentally deploying a database alongside the app. Layer hygiene is maintained when the app container and the database are independently lifecycle-managed, mirroring production topology where the database runs separately (RDS, Managed Postgres, etc.). Single-container simplicity is appropriate for the reference implementation; orchestration (multi-container, K8s, etc.) is a downstream concern. The PORT range constraint (6040–6049) is an asp project requirement documented in `docs/brief.md` and enforced by `api/src/lib/config.ts`; platforms injecting `PORT` outside this range require `config.ts` relaxation — out of scope for the reference implementation.
+**Rationale:** A Postgres service in compose would introduce a local-infra dependency that downstream forks would have to audit and remove to avoid accidentally deploying a database alongside the app. Layer hygiene is maintained when the app container and the database are independently lifecycle-managed, mirroring production topology where the database runs separately (RDS, Managed Postgres, etc.). Single-container simplicity is appropriate for the reference implementation; orchestration (multi-container, K8s, etc.) is a downstream concern. The PORT range constraint (6040–6049) is a Corral Talent project requirement documented in `docs/brief.md` and enforced by `api/src/lib/config.ts`; platforms injecting `PORT` outside this range require `config.ts` relaxation — out of scope for the reference implementation.
 
 **Consequences:**
 
@@ -1153,7 +1153,7 @@ All five are NOT NULL columns; no `IS NULL OR` guard is needed (contrast with nu
 
 **Decision:** E2E tests in CI run against the production Docker image (`asp:local`), not dev servers. `playwright.config.ts` declares a single `webServer` block that is always present — in both local and CI runs — with the server-startup command driven by the `CONTAINER_IMAGE` environment variable rather than a `process.env.CI` branch.
 
-**Rationale:** The false-confidence risk: testing an un-built, un-containerised code path (dev servers) diverges from what is deployed (production container). E2E tests exist to verify the deployable artefact — the production container. Running E2E against dev servers masks build-time issues, missing dependencies, or Dockerfile misconfigurations that would only surface after deployment. Aligning E2E with the production container is the canonical "reference runs end-to-end" guarantee for asp. This closes Phase 4.5 lesson (CER-016 — integration tests silently diverging from production).
+**Rationale:** The false-confidence risk: testing an un-built, un-containerised code path (dev servers) diverges from what is deployed (production container). E2E tests exist to verify the deployable artefact — the production container. Running E2E against dev servers masks build-time issues, missing dependencies, or Dockerfile misconfigurations that would only surface after deployment. Aligning E2E with the production container is the canonical "reference runs end-to-end" guarantee for Corral Talent. This closes Phase 4.5 lesson (CER-016 — integration tests silently diverging from production).
 
 **Updated mechanism (INFRA-038):** `playwright.config.ts` resolves all server configuration from environment variables with documented defaults. There is no `process.env.CI` branch:
 
@@ -1328,7 +1328,7 @@ read log fires when no PII is exposed.
 
 **Decision.** `@fastify/cors` in `api/src/plugins/cors.ts` enumerates exactly
 the HTTP methods the API uses: `GET`, `POST`, `PATCH`, `DELETE`, `OPTIONS`.
-`PUT` is deliberately excluded — asp follows the PATCH convention for all
+`PUT` is deliberately excluded — Corral Talent follows the PATCH convention for all
 partial updates (no resource is fully replaced via PUT).
 
 **Rationale.** Restricting the allowed-methods list to what is actually used
@@ -1372,7 +1372,7 @@ revisited and the `methods` array in `cors.ts` updated explicitly.
 
 **Rationale:** Goal hours belong on the category because they are category-intrinsic metadata, not applicant state. Operator-editable readiness weights are a natural extension of the single-tenant operator-config philosophy: the system ships with researched defaults and the operator can adjust them without a code deploy. A single-row table is preferred over a key-value config table because the weights are interdependent (they must sum to 1.0), typed (float8 with per-column bound CHECKs), and always read and written atomically. A KV approach would push the cross-field sum validation to the application layer with no DB-level expression index to help.
 
-**Trade-off:** The singleton CHECK pattern (`id = 'default'`) is unusual but proven in asp's schema (see the singleton-row convention). The `PUT /api/admin/readiness-config` endpoint intentionally performs an upsert (`ON CONFLICT (id) DO UPDATE`) so the row is always present after first migration. The weight sum constraint (±0.001 tolerance) is enforced at the API layer (Zod) and UI layer; no DB-level CHECK enforces the cross-column sum because Postgres does not support multi-column CHECKs across float arithmetic with tolerance bounds.
+**Trade-off:** The singleton CHECK pattern (`id = 'default'`) is unusual but proven in Corral Talent's schema (see the singleton-row convention). The `PUT /api/admin/readiness-config` endpoint intentionally performs an upsert (`ON CONFLICT (id) DO UPDATE`) so the row is always present after first migration. The weight sum constraint (±0.001 tolerance) is enforced at the API layer (Zod) and UI layer; no DB-level CHECK enforces the cross-column sum because Postgres does not support multi-column CHECKs across float arithmetic with tolerance bounds.
 
 **Alternative rejected:** Storing readiness weights in a generic `operator_settings` KV table was considered and rejected. A KV table would require runtime type coercion, makes cross-field sum validation harder to enforce, and adds no flexibility benefit for a closed three-value config that will not grow without a schema change anyway.
 
@@ -1531,6 +1531,6 @@ themselves — the remote DB is the operator's responsibility.
 - Rate limiting: three per-group caps `RATE_LIMIT_MAX_AUTH` (default 10, covers sign-in/sign-up/password-reset/change-password), `RATE_LIMIT_MAX_MFA` (default 10, covers verify-totp), `RATE_LIMIT_MAX_API` (default 30, covers experiences/mentor-grant-requests), all sharing `RATE_LIMIT_WINDOW_MS` (default 60 000 ms). Groups use isolated keyGenerator counters. INFRA-053.
 - `MFA_ENABLED=false` is rejected in `NODE_ENV=production` at config layer.
   This gate exists from Phase 1, before Better Auth is wired.
-- All asp dev servers bind in port range 6040–6049.
+- All Corral Talent dev servers bind in port range 6040–6049.
 - UI never imports runtime code from `api/`. `ui/src/api-types.ts` is generated from the OpenAPI spec via `pnpm --filter @asp/api generate:openapi && pnpm --filter @asp/ui generate:types` and committed; CI drift check enforces no divergence (API-014). Local variant uses `--env-file=.env.local`; CI uses `generate:openapi:ci` (plain tsx, env vars from runner). The reviewer continues to verify no runtime `api/` imports exist in `ui/`.
 - Drizzle schema (`api/src/db/schema/`) is PROTECTED from Phase 2 onward.
