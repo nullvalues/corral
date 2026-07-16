@@ -38,11 +38,12 @@ Copy the example env file and fill it in:
 cp .env.example .env.local
 ```
 
-`.env.local` at the repo root is read by `pnpm dev` (via each package's
-`--env-file=.env.local`) and by root-level scripts (`pnpm uat`, `pnpm
-uat:setup`, `pnpm seed:uat`). The `api/` package also reads its own
-`api/.env.local` (create it separately, or symlink/copy — see `docs/uat.md`
-"Environment setup" for a worked example of both files together).
+`.env.local` at the repo root is the single source of truth. It is read by
+`pnpm dev` and every `api` package script (`--env-file=../.env.local`,
+resolved relative to `api/`), by root-level scripts (`pnpm uat`, `pnpm
+uat:setup`, `pnpm seed:uat`), and — for `DATABASE_URL_TEST` only — by the
+Vitest cold-shell loader (`api/tests/loadDatabaseUrlTest.ts`). There is no
+separate `api/.env.local` to create or keep in sync.
 
 The full table of every environment variable — type, requirement, default,
 and notes — lives in `docs/operations.md` § "2. Configuration reference".
@@ -51,15 +52,16 @@ Read that table before setting values; do not duplicate it here.
 **`DATABASE_URL_TEST`** deserves a callout because its absence changes test
 behaviour non-uniformly (see Section 6 for the full explanation):
 
-- Set `DATABASE_URL_TEST` in `api/.env.local` to a dedicated **test** database
-  connection string — never the same database as `DATABASE_URL`.
+- Set `DATABASE_URL_TEST` in the repo-root `.env.local` to a dedicated
+  **test** database connection string — never the same database as
+  `DATABASE_URL`.
 - `api/vitest.config.ts` loads `DATABASE_URL_TEST` (and only that key) out of
-  `api/.env.local` at config-load time (`loadDatabaseUrlTest()`, in
+  the repo-root `.env.local` at config-load time (`loadDatabaseUrlTest()`, in
   `api/tests/loadDatabaseUrlTest.ts`), so a properly configured `.env.local`
   lets `pnpm typecheck && pnpm test` run green from a cold shell — no manual
   `export` needed.
-- If `DATABASE_URL_TEST` is unset both in the shell and in `api/.env.local`,
-  the integration test project's `globalSetup` (`api/tests/globalSetup.ts`)
+- If `DATABASE_URL_TEST` is unset both in the shell and in the repo-root
+  `.env.local`, the integration test project's `globalSetup` (`api/tests/globalSetup.ts`)
   throws immediately: `Error: DATABASE_URL_TEST is required for integration
   tests`. This is a hard failure, **not** a graceful skip — the process exits
   non-zero and the whole `pnpm test` build gate fails (see Section 6).
@@ -179,8 +181,8 @@ which means it runs *both* Vitest projects defined in
 - **`integration`** project — every `tests/**/*.integration.test.ts` file
   (plus `tests/api-integration.test.ts`). This project's `globalSetup`
   (`api/tests/globalSetup.ts`) requires `DATABASE_URL_TEST` to be set in the
-  real process environment. If it is **not** set (and not loaded from
-  `api/.env.local` — see Section 3), `globalSetup` throws
+  real process environment. If it is **not** set (and not loaded from the
+  repo-root `.env.local` — see Section 3), `globalSetup` throws
   `Error: DATABASE_URL_TEST is required for integration tests` and the
   process exits non-zero. **There is no graceful skip for this project** —
   the header comment in `globalSetup.ts` is explicit: "NO GRACEFUL SKIP".
@@ -189,8 +191,8 @@ Practical consequence: running the documented build gate `pnpm typecheck &&
 pnpm test` from a cold shell with **no** `DATABASE_URL_TEST` set anywhere
 fails — the `integration` project's `globalSetup` throws and the whole `pnpm
 test` invocation exits non-zero, taking down the `-r` recursive run. Set
-`DATABASE_URL_TEST` in `api/.env.local` (Section 3) so the gate passes
-without manual exports.
+`DATABASE_URL_TEST` in the repo-root `.env.local` (Section 3) so the gate
+passes without manual exports.
 
 To iterate on API unit tests only, without touching a database:
 
@@ -296,10 +298,10 @@ causes are a `SESSION_SECRET` shorter than 64 chars, an empty
 `ALLOWED_ORIGINS`, or a `PORT` outside `6050–6059`.
 
 **`pnpm test` fails immediately with "DATABASE_URL_TEST is required for
-integration tests".** See Section 6 — set `DATABASE_URL_TEST` in
-`api/.env.local` to a dedicated test database connection string, or run
-`pnpm --filter @asp/api test:unit` if you only need the unit project for
-now.
+integration tests".** See Section 6 — set `DATABASE_URL_TEST` in the
+repo-root `.env.local` to a dedicated test database connection string, or
+run `pnpm --filter @asp/api test:unit` if you only need the unit project
+for now.
 
 **Database unreachable / migration failed.** See `docs/operations.md` §
 "6. Incident response" for the full remote-Postgres connectivity and migration
@@ -317,6 +319,6 @@ changed an API route or schema without regenerating the typed client — see
 Section 8.
 
 **CORS / 403 errors from the Vite dev proxy.** Confirm `ALLOWED_ORIGINS`
-includes `http://localhost:6051` in your `api/.env.local` — see
+includes `http://localhost:6051` in your repo-root `.env.local` — see
 `docs/architecture.md` ADR on Better Auth trusted-origins for why the Vite
 proxy needs an explicit origin entry even in dev.

@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "node --env-file=.env.local --import=tsx/esm --watch src/index.ts",
+    "dev": "node --env-file=../.env.local --import=tsx/esm --watch src/index.ts",
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
     "test": "vitest --run",
@@ -21,14 +21,14 @@
     "db:test:truncate": "tsx src/db/testdb.ts data-clean",
     "db:test:wipe": "tsx src/db/testdb.ts wipe",
     "db:test:seed": "tsx src/db/testdb.ts seed",
-    "db:seed": "node --env-file=.env.local --import=tsx/esm src/db/seed.ts",
-    "seed:dev": "node --env-file=.env.local --import=tsx/esm src/db/seed.ts",
-    "seed:prod": "node --env-file=.env.local --import=tsx/esm src/scripts/seed.prod.ts",
-    "generate:openapi": "node --env-file=.env.local --import=tsx/esm src/scripts/generate-openapi.ts",
+    "db:seed": "node --env-file=../.env.local --import=tsx/esm src/db/seed.ts",
+    "seed:dev": "node --env-file=../.env.local --import=tsx/esm src/db/seed.ts",
+    "seed:prod": "node --env-file=../.env.local --import=tsx/esm src/scripts/seed.prod.ts",
+    "generate:openapi": "node --env-file=../.env.local --import=tsx/esm src/scripts/generate-openapi.ts",
     "generate:openapi:ci": "tsx src/scripts/generate-openapi.ts",
-    "migrate:run": "node --env-file=.env.local --import=tsx/esm src/scripts/migrate.ts",
-    "admin:promote": "node --env-file=.env.local --import=tsx/esm src/scripts/adminPromote.ts",
-    "seed:uat": "node --env-file=.env.local --import=tsx/esm src/db/seed.uat.ts"
+    "migrate:run": "node --env-file=../.env.local --import=tsx/esm src/scripts/migrate.ts",
+    "admin:promote": "node --env-file=../.env.local --import=tsx/esm src/scripts/adminPromote.ts",
+    "seed:uat": "node --env-file=../.env.local --import=tsx/esm src/db/seed.uat.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1084.0",

@@ -40,8 +40,8 @@ import { defineConfig } from 'vitest/config';
 import { loadDatabaseUrlTest } from './tests/loadDatabaseUrlTest.js';
 
 // Cold-shell build gate (TEST-056, resolves CER-039): load ONLY
-// DATABASE_URL_TEST from api/.env.local so `pnpm typecheck && pnpm test` runs
-// green from a cold shell with neither DATABASE_URL_TEST nor NODE_ENV exported.
+// DATABASE_URL_TEST from the repo-root .env.local so `pnpm typecheck && pnpm test`
+// runs green from a cold shell with neither DATABASE_URL_TEST nor NODE_ENV exported.
 // vitest.config.ts is evaluated in the main process before globalSetup runs and
 // before worker processes are forked (workers inherit this env), so setting
 // process.env.DATABASE_URL_TEST here makes it available to globalSetup, to
@@ -53,7 +53,7 @@ import { loadDatabaseUrlTest } from './tests/loadDatabaseUrlTest.js';
 // file is absent (CI exports DATABASE_URL_TEST via its Postgres service
 // container) and never overrides an already-exported value.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-loadDatabaseUrlTest(path.join(__dirname, '.env.local'));
+loadDatabaseUrlTest(path.join(__dirname, '..', '.env.local'));
 
 export default defineConfig({
   test: {

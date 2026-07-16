@@ -18,7 +18,9 @@ The following must be installed on the tester's machine before starting:
 
 ## Environment setup
 
-1. Copy `.env.example` to `.env.local` in the project root (not inside `api/` or `ui/`).
+1. Copy `.env.example` to `.env.local` in the project root. This is the single
+   source of truth — every package's scripts read it (see `docs/development.md`
+   § "3. Environment" for how); there is no separate `api/.env.local`.
 
 2. Fill in the required values:
 
@@ -39,16 +41,6 @@ The following must be installed on the tester's machine before starting:
    >
    > **Note:** `UAT=true` is required for the reset-links endpoint to be registered. `UAT=true` is rejected by the server if `NODE_ENV=production`.
 
-3. Also create `.env.local` inside the `api/` directory with at minimum:
-
-   ```
-   DATABASE_URL=postgresql://user:pass@host:5432/asp
-   SESSION_SECRET=<same value as above>
-   ALLOWED_ORIGINS=http://localhost:6051
-   MAILER_PROVIDER=console
-   UAT=true
-   ```
-
 ---
 
 ## Running the seed
@@ -59,7 +51,7 @@ The UAT seed provisions three stable accounts (applicant, mentor, admin), a ment
 pnpm seed:uat
 ```
 
-This runs against the database configured by `DATABASE_URL` in `api/.env.local`. **Re-running the seed deletes and recreates all three UAT accounts** — any active sessions or enrolled TOTP factors are wiped. Run `pnpm uat:setup` again after each re-seed to restore storageState files.
+This runs against the database configured by `DATABASE_URL` in the repo-root `.env.local`. **Re-running the seed deletes and recreates all three UAT accounts** — any active sessions or enrolled TOTP factors are wiped. Run `pnpm uat:setup` again after each re-seed to restore storageState files.
 
 Default UAT accounts created by the seed:
 

@@ -371,7 +371,7 @@ asp/
 │   ├── drizzle/                # drizzle-kit migration output (Phase 2+)
 │   └── tests/
 │       ├── globalSetup.ts            # integration suite setup: env stubs, forced NODE_ENV=test, DB clean, assertTestDb
-│       ├── loadDatabaseUrlTest.ts    # single-key loader: DATABASE_URL_TEST from api/.env.local for cold-shell gate (TEST-056)
+│       ├── loadDatabaseUrlTest.ts    # single-key loader: DATABASE_URL_TEST from repo-root .env.local for cold-shell gate (TEST-056)
 │       └── api-040.integration.test.ts  # DB-backed integration tests for GET /api/mentor/impact (TEST-051). Asserts ABAC isolation (mentor A excludes mentor B rows), counter math (lifetimeHoursVerified/monthHoursVerified/applicantsMentored/avgTurnaroundHours/pendingVerifications against deterministic seed), empty-caller all-zero baseline, and 401 when unauthenticated.
 ├── ui/                         # @asp/ui — React 19 + Vite + Tailwind 4
 │   └── src/
@@ -590,7 +590,7 @@ coordinated, dependency-free mechanisms make this work:
 
 - A single-key loader at the top of `api/vitest.config.ts`
   (`tests/loadDatabaseUrlTest.ts`) reads **only** `DATABASE_URL_TEST` from
-  `api/.env.local` when present and not already exported. It runs in the vitest
+  the repo-root `.env.local` when present and not already exported. It runs in the vitest
   main process before `globalSetup` and before workers fork, so the value is
   inherited everywhere it is needed. The dev `DATABASE_URL` and
   `NODE_ENV=development` in that file are deliberately **not** loaded — copying

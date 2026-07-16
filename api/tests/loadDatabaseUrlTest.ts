@@ -1,7 +1,7 @@
 /**
  * Cold-shell test-gate env loader (TEST-056, resolves CER-039).
  *
- * Reads ONLY `DATABASE_URL_TEST` out of `api/.env.local` so the documented
+ * Reads ONLY `DATABASE_URL_TEST` out of the repo-root `.env.local` so the documented
  * gate `pnpm typecheck && pnpm test` runs green from a cold shell with neither
  * `DATABASE_URL_TEST` nor `NODE_ENV` exported.
  *
