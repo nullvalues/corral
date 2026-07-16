@@ -37,6 +37,9 @@ React 19 + Vite + TypeScript + Tailwind CSS (UI); Fastify + Drizzle + Better Aut
    - `DATABASE_URL`: PostgreSQL 15+ connection string (local or remote)
    - `BETTER_AUTH_*`: auth provider credentials
    - Other secrets as documented
+   - The `api` package reads its own `api/.env.local` rather than the repo
+     root one — symlink or copy it: `ln -s ../.env.local api/.env.local`
+     (see `docs/development.md` § "Environment" for why)
 4. `pnpm --filter @asp/api migrate:run` — apply migrations
 5. `pnpm seed:uat` — provision test accounts (requires API on `:6050`)
 6. `pnpm dev` — API on `:6050`, UI on `:6051`
