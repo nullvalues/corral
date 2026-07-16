@@ -15,9 +15,9 @@ import { buildApp } from '../src/app.js';
  * satisfied during `buildApp()`.
  */
 const ENV_STUBS = {
-  PORT: '6040',
+  PORT: '6050',
   SESSION_SECRET: 'a'.repeat(64),
-  ALLOWED_ORIGINS: 'http://localhost:6041',
+  ALLOWED_ORIGINS: 'http://localhost:6051',
   NODE_ENV: 'test',
   MFA_ENABLED: 'true',
 } as const;

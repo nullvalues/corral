@@ -85,7 +85,7 @@ export async function buildApp(
   // Must be registered before any route that should appear in the spec. API-013.
   await app.register(swagger, {
     openapi: {
-      info: { title: 'asp API', version: '1.0.0' },
+      info: { title: 'Corral Talent API', version: '1.0.0' },
       servers: [{ url: `http://localhost:${config.PORT}` }],
     },
     transform: jsonSchemaTransform,

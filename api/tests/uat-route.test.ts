@@ -12,9 +12,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const BASE_ENV = {
-  PORT: '6040',
+  PORT: '6050',
   SESSION_SECRET: 'a'.repeat(64),
-  ALLOWED_ORIGINS: 'http://localhost:6041',
+  ALLOWED_ORIGINS: 'http://localhost:6051',
   NODE_ENV: 'test',
   MFA_ENABLED: 'true',
 } as const;

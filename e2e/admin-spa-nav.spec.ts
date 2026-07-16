@@ -1,6 +1,6 @@
 // E2E tests require live dev servers:
-//   API: pnpm --filter @asp/api dev  (port 6040)
-//   UI:  pnpm --filter @asp/ui dev   (port 6041)
+//   API: pnpm --filter @asp/api dev  (port 6050)
+//   UI:  pnpm --filter @asp/ui dev   (port 6051)
 // Pre-requisite: DATABASE_URL must point to a running Postgres instance.
 // Not included in CI — intended for local pre-merge runs.
 //

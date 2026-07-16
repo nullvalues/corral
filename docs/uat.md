@@ -24,13 +24,13 @@ The following must be installed on the tester's machine before starting:
 
    ```
    SESSION_SECRET=<≥64 random chars — generate with: openssl rand -hex 64>
-   ALLOWED_ORIGINS=http://localhost:6041
-   PORT=6040
+   ALLOWED_ORIGINS=http://localhost:6051
+   PORT=6050
    NODE_ENV=development
    DATABASE_URL=postgresql://user:pass@host:5432/asp
    MFA_ENABLED=true
    MFA_GRACE_HOURS=24
-   VITE_API_URL=http://localhost:6040
+   VITE_API_URL=http://localhost:6050
    MAILER_PROVIDER=console
    UAT=true
    ```
@@ -44,7 +44,7 @@ The following must be installed on the tester's machine before starting:
    ```
    DATABASE_URL=postgresql://user:pass@host:5432/asp
    SESSION_SECRET=<same value as above>
-   ALLOWED_ORIGINS=http://localhost:6041
+   ALLOWED_ORIGINS=http://localhost:6051
    MAILER_PROVIDER=console
    UAT=true
    ```
@@ -82,7 +82,7 @@ Open two terminal windows and run:
 pnpm dev
 ```
 
-This starts the API on `http://localhost:6040` and the UI on `http://localhost:6041` concurrently. Wait until both are ready before proceeding.
+This starts the API on `http://localhost:6050` and the UI on `http://localhost:6051` concurrently. Wait until both are ready before proceeding.
 
 ---
 
@@ -173,14 +173,14 @@ During UAT, the mailer is configured with `MAILER_PROVIDER=console`. No email is
 After submitting the "Forgot password" form in the UI, call:
 
 ```bash
-curl http://localhost:6040/api/uat/reset-links
+curl http://localhost:6050/api/uat/reset-links
 ```
 
 **Response shape:**
 
 ```json
 [
-  { "email": "uat-applicant@asp.dev", "url": "http://localhost:6041/reset-password?token=...", "sentAt": "2026-06-10T12:00:00.000Z" }
+  { "email": "uat-applicant@asp.dev", "url": "http://localhost:6051/reset-password?token=...", "sentAt": "2026-06-10T12:00:00.000Z" }
 ]
 ```
 

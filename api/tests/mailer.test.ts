@@ -13,8 +13,8 @@ import type { Config } from '../src/lib/config.js';
 function makeConfig(overrides: Partial<Config> = {}): Config {
   return {
     SESSION_SECRET: 'a'.repeat(64),
-    ALLOWED_ORIGINS: 'http://localhost:6041',
-    PORT: 6040,
+    ALLOWED_ORIGINS: 'http://localhost:6051',
+    PORT: 6050,
     NODE_ENV: 'test',
     MFA_ENABLED: true,
     MFA_GRACE_HOURS: 24,

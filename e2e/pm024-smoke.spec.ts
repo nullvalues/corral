@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { setupApplicantSession, applicantSessionFile } from './fixtures/applicantSession.js';
 import { setupAdminSession, adminSessionFile } from './fixtures/adminSession.js';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
 
 test.beforeAll(async () => {
   if (!fs.existsSync(applicantSessionFile)) await setupApplicantSession();

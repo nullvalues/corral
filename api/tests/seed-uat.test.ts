@@ -20,8 +20,8 @@ describe('seed.uat.ts Origin header', () => {
     process.env = {
       ...originalEnv,
       DATABASE_URL: 'postgres://user:pass@localhost:5432/db',
-      API_BASE: 'http://localhost:6040',
-      ALLOWED_ORIGINS: 'http://localhost:6041',
+      API_BASE: 'http://localhost:6050',
+      ALLOWED_ORIGINS: 'http://localhost:6051',
     };
 
     fetchMock = vi.fn().mockResolvedValue({
@@ -42,7 +42,7 @@ describe('seed.uat.ts Origin header', () => {
   });
 
   it('sign-in/email call includes Origin header matching API_BASE', async () => {
-    const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+    const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
     const ORIGIN = API_BASE;
 
     await fetch(`${API_BASE}/api/auth/sign-in/email`, {
@@ -54,12 +54,12 @@ describe('seed.uat.ts Origin header', () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     const [_url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     const headers = init.headers as Record<string, string>;
-    expect(headers['Origin']).toBe('http://localhost:6040');
+    expect(headers['Origin']).toBe('http://localhost:6050');
   });
 
-  it('sign-in/email Origin defaults to http://localhost:6040 when API_BASE is unset', async () => {
+  it('sign-in/email Origin defaults to http://localhost:6050 when API_BASE is unset', async () => {
     delete process.env['API_BASE'];
-    const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+    const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
     const ORIGIN = API_BASE;
 
     await fetch(`${API_BASE}/api/auth/sign-in/email`, {
@@ -71,11 +71,11 @@ describe('seed.uat.ts Origin header', () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     const [_url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     const headers = init.headers as Record<string, string>;
-    expect(headers['Origin']).toBe('http://localhost:6040');
+    expect(headers['Origin']).toBe('http://localhost:6050');
   });
 
   it('two-factor/enable call includes Origin header matching API_BASE', async () => {
-    const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+    const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
     const ORIGIN = API_BASE;
 
     await fetch(`${API_BASE}/api/auth/two-factor/enable`, {
@@ -91,11 +91,11 @@ describe('seed.uat.ts Origin header', () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     const [_url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     const headers = init.headers as Record<string, string>;
-    expect(headers['Origin']).toBe('http://localhost:6040');
+    expect(headers['Origin']).toBe('http://localhost:6050');
   });
 
   it('sign-up/email call includes Origin header matching API_BASE', async () => {
-    const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+    const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
     const ORIGIN = API_BASE;
 
     await fetch(`${API_BASE}/api/auth/sign-up/email`, {
@@ -107,6 +107,6 @@ describe('seed.uat.ts Origin header', () => {
     expect(fetchMock).toHaveBeenCalledOnce();
     const [_url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     const headers = init.headers as Record<string, string>;
-    expect(headers['Origin']).toBe('http://localhost:6040');
+    expect(headers['Origin']).toBe('http://localhost:6050');
   });
 });

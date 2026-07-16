@@ -18,7 +18,7 @@ import { signUpAndEnrolTotp, signInWithTotp, writeStorageState } from '../helper
 
 export const adminSessionFile = path.join(os.tmpdir(), 'asp-admin-session.json');
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
 
 export async function setupAdminSession(): Promise<{ userId: string }> {
   const email = `admin+${randomUUID()}@example.com`;

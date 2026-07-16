@@ -132,17 +132,17 @@ This runs `@asp/api` and `@asp/ui` concurrently:
 
 | Port | Service |
 |------|---------|
-| 6040 | `@asp/api` (Fastify) |
-| 6041 | `@asp/ui` (Vite) |
-| 6042–6049 | Reserved for Corral Talent dev services (unassigned) |
+| 6050 | `@asp/api` (Fastify) |
+| 6051 | `@asp/ui` (Vite) |
+| 6052–6059 | Reserved for Corral Talent dev services (unassigned) |
 
-All Corral Talent dev servers must bind in the **6040–6049** range — this is a project
+All Corral Talent dev servers must bind in the **6050–6059** range — this is a project
 convention enforced for `PORT` at the config-validation layer (`api/src/lib/config.ts`
 rejects a `PORT` outside that range at startup). If you need to run an
 additional local service (a mock, a worker, etc.), pick an unused port inside
-6042–6049 rather than a port outside the range.
+6052–6059 rather than a port outside the range.
 
-The Vite dev server proxies `/api/*` requests to `http://localhost:6040`
+The Vite dev server proxies `/api/*` requests to `http://localhost:6050`
 (`ui/vite.config.ts`), so the UI can be developed against the local API
 without CORS friction.
 
@@ -293,7 +293,7 @@ change fails CI.
 at module load time. Check the specific variable named in the error against
 `docs/operations.md` § "2. Configuration reference" — the most common
 causes are a `SESSION_SECRET` shorter than 64 chars, an empty
-`ALLOWED_ORIGINS`, or a `PORT` outside `6040–6049`.
+`ALLOWED_ORIGINS`, or a `PORT` outside `6050–6059`.
 
 **`pnpm test` fails immediately with "DATABASE_URL_TEST is required for
 integration tests".** See Section 6 — set `DATABASE_URL_TEST` in
@@ -317,6 +317,6 @@ changed an API route or schema without regenerating the typed client — see
 Section 8.
 
 **CORS / 403 errors from the Vite dev proxy.** Confirm `ALLOWED_ORIGINS`
-includes `http://localhost:6041` in your `api/.env.local` — see
+includes `http://localhost:6051` in your `api/.env.local` — see
 `docs/architecture.md` ADR on Better Auth trusted-origins for why the Vite
 proxy needs an explicit origin entry even in dev.

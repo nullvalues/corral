@@ -14,7 +14,7 @@ import { setupApplicantSession, applicantSessionFile } from './fixtures/applican
 import { setupAdminSession, adminSessionFile } from './fixtures/adminSession.js';
 import { setupMentorSession, mentorSessionFile } from './fixtures/mentorSession.js';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
 
 // ── State shared across beforeAll / scenarios ─────────────────────────────────
 

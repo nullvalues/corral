@@ -12,9 +12,9 @@ import { buildApp } from '../src/app.js';
  *   5. The route is public — no session cookie required.
  */
 const ENV_STUBS = {
-  PORT: '6040',
+  PORT: '6050',
   SESSION_SECRET: 'a'.repeat(64),
-  ALLOWED_ORIGINS: 'http://localhost:6041',
+  ALLOWED_ORIGINS: 'http://localhost:6051',
   NODE_ENV: 'test',
   MFA_ENABLED: 'true',
 } as const;
@@ -48,7 +48,7 @@ describe('GET /api/openapi.json', () => {
     try {
       const res = await app.inject({ method: 'GET', url: '/api/openapi.json' });
       const body = res.json() as { info: { title: string; version: string } };
-      expect(body.info.title).toBe('asp API');
+      expect(body.info.title).toBe('Corral Talent API');
       expect(body.info.version).toBe('1.0.0');
     } finally {
       await app.close();

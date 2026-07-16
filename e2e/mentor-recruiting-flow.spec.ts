@@ -1,6 +1,6 @@
 // E2E tests require live dev servers:
-//   API: pnpm --filter @asp/api dev   (port 6040)
-//   UI:  pnpm --filter @asp/ui dev    (port 6041)
+//   API: pnpm --filter @asp/api dev   (port 6050)
+//   UI:  pnpm --filter @asp/ui dev    (port 6051)
 //   Seed: pnpm --filter @asp/api db:seed
 //   Run:  npx playwright test e2e/mentor-recruiting-flow.spec.ts
 //
@@ -16,7 +16,7 @@ import { setupApplicantSession, applicantSessionFile } from './fixtures/applican
 import { setupAdminSession, adminSessionFile } from './fixtures/adminSession.js';
 import { setupMentorSession, mentorSessionFile } from './fixtures/mentorSession.js';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
 
 // ---------------------------------------------------------------------------
 // Shared state — populated in beforeAll, consumed in test bodies.

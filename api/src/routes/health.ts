@@ -2,7 +2,7 @@
  * Fastify plugin: GET /api/health
  *
  * This plugin is intentionally NOT wrapped with `fastify-plugin`. Routes must
- * stay encapsulated per asp's plugin-encapsulation rule: only cross-cutting
+ * stay encapsulated per Corral Talent's plugin-encapsulation rule: only cross-cutting
  * decorations (e.g. the storage / ai client seams) escape their plugin
  * boundary; route definitions do not.
  *

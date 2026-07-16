@@ -20,8 +20,8 @@ import * as path from 'node:path';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ensureAccount, deleteAccountByEmail, enrollTotp, writeUatSecrets } from '../src/db/seed-uat-helpers.js';
 
-const MOCK_API_BASE = 'http://localhost:6040';
-const MOCK_ORIGIN = 'http://localhost:6040';
+const MOCK_API_BASE = 'http://localhost:6050';
+const MOCK_ORIGIN = 'http://localhost:6050';
 
 // Opts that eliminate the real 2-second delay in unit tests.
 const NO_DELAY = { maxAttempts: 3, retryDelayMs: 0 };
@@ -271,7 +271,7 @@ describe('enrollTotp', () => {
       headers: { get: () => null },
     } as unknown as Response);
 
-    const secret = await enrollTotp('test@example.com', 'Pass1!', 'http://localhost:6040', 'http://localhost:6040');
+    const secret = await enrollTotp('test@example.com', 'Pass1!', 'http://localhost:6050', 'http://localhost:6050');
     expect(secret).toBe('JBSWY3DPEHPK3PXP');
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
@@ -285,7 +285,7 @@ describe('enrollTotp', () => {
     } as unknown as Response);
 
     await expect(
-      enrollTotp('bad@example.com', 'wrong', 'http://localhost:6040', 'http://localhost:6040'),
+      enrollTotp('bad@example.com', 'wrong', 'http://localhost:6050', 'http://localhost:6050'),
     ).rejects.toThrow(/sign-in for bad@example\.com failed 401/);
     expect(fetchMock).toHaveBeenCalledOnce();
   });
@@ -307,7 +307,7 @@ describe('enrollTotp', () => {
     } as unknown as Response);
 
     await expect(
-      enrollTotp('t@example.com', 'Pass1!', 'http://localhost:6040', 'http://localhost:6040'),
+      enrollTotp('t@example.com', 'Pass1!', 'http://localhost:6050', 'http://localhost:6050'),
     ).rejects.toThrow(/TOTP enable for t@example\.com failed 400/);
   });
 
@@ -338,7 +338,7 @@ describe('enrollTotp', () => {
     } as unknown as Response);
 
     await expect(
-      enrollTotp('t@example.com', 'Pass1!', 'http://localhost:6040', 'http://localhost:6040'),
+      enrollTotp('t@example.com', 'Pass1!', 'http://localhost:6050', 'http://localhost:6050'),
     ).rejects.toThrow(/TOTP verify for t@example\.com failed 422/);
   });
 
@@ -369,7 +369,7 @@ describe('enrollTotp', () => {
       headers: { get: () => null },
     } as unknown as Response);
 
-    await enrollTotp('t@example.com', 'Pass1!', 'http://localhost:6040', 'http://localhost:6040');
+    await enrollTotp('t@example.com', 'Pass1!', 'http://localhost:6050', 'http://localhost:6050');
 
     // enable call (index 1) and verify call (index 2) must carry the cookie
     for (const callIdx of [1, 2]) {

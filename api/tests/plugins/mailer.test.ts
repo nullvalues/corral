@@ -4,9 +4,9 @@ import mailerPlugin from '../../src/plugins/mailer.js';
 import { ConsoleMailerAdapter, type MailerClient } from '../../src/lib/mailer.js';
 
 const ENV_STUBS = {
-  PORT: '6040',
+  PORT: '6050',
   SESSION_SECRET: 'a'.repeat(64),
-  ALLOWED_ORIGINS: 'http://localhost:6041',
+  ALLOWED_ORIGINS: 'http://localhost:6051',
   NODE_ENV: 'test',
   MFA_ENABLED: 'true',
 } as const;

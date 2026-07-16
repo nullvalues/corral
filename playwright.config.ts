@@ -6,18 +6,18 @@ import { defineConfig, devices } from '@playwright/test';
 //                    image (e.g. "asp:local"). When absent, Playwright starts
 //                    the monorepo dev servers via `pnpm dev`.
 // BASE_URL         — the URL Playwright navigates to. Defaults to the
-//                    container port (6040) when CONTAINER_IMAGE is set, and to
-//                    the UI dev-server port (6041) otherwise.
+//                    container port (6050) when CONTAINER_IMAGE is set, and to
+//                    the UI dev-server port (6051) otherwise.
 // READINESS_URL    — the URL Playwright polls before any test starts. Defaults
 //                    to BASE_URL + /api/health.
 
 const containerImage = process.env['CONTAINER_IMAGE'];
 
-const defaultBase = containerImage ? 'http://localhost:6040' : 'http://localhost:6041';
+const defaultBase = containerImage ? 'http://localhost:6050' : 'http://localhost:6051';
 const baseURL = process.env['BASE_URL'] ?? defaultBase;
 
 const defaultReadiness = containerImage
-  ? 'http://localhost:6040/api/health'
+  ? 'http://localhost:6050/api/health'
   : `${baseURL}/api/health`;
 const readinessURL = process.env['READINESS_URL'] ?? defaultReadiness;
 

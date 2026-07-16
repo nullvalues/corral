@@ -38,10 +38,10 @@ React 19 + Vite + TypeScript + Tailwind CSS (UI); Fastify + Drizzle + Better Aut
    - `BETTER_AUTH_*`: auth provider credentials
    - Other secrets as documented
 4. `pnpm --filter @asp/api migrate:run` — apply migrations
-5. `pnpm seed:uat` — provision test accounts (requires API on `:6040`)
-6. `pnpm dev` — API on `:6040`, UI on `:6041`
+5. `pnpm seed:uat` — provision test accounts (requires API on `:6050`)
+6. `pnpm dev` — API on `:6050`, UI on `:6051`
 
-**Port note**: Corral Talent pins all dev servers to **6040–6049** for consistency.
+**Port note**: Corral Talent pins all dev servers to **6050–6059** for consistency.
 
 ## Documentation
 

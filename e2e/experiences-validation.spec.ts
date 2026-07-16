@@ -1,6 +1,6 @@
 // E2E tests require live dev servers:
-//   API: pnpm --filter @asp/api dev  (port 6040)
-//   UI:  pnpm --filter @asp/ui dev   (port 6041)
+//   API: pnpm --filter @asp/api dev  (port 6050)
+//   UI:  pnpm --filter @asp/ui dev   (port 6051)
 // Pre-requisite: pnpm --filter @asp/api db:seed (creates active categories)
 // Not included in CI — intended for local pre-merge runs.
 //
@@ -11,7 +11,7 @@ import { test, expect } from '@playwright/test';
 import { setupApplicantSession, applicantSessionFile } from './fixtures/applicantSession.js';
 import * as fs from 'fs';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6040';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
 
 // Set up the session before all tests in this file (once).
 test.beforeAll(async () => {
