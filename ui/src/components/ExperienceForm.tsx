@@ -57,13 +57,23 @@ export function ExperienceForm({
 }: ExperienceFormProps) {
   const draftKey = getDraftKey(ownerUserId, experienceId);
 
-  // Attempt to restore draft on mount — returns undefined if none/corrupt
+  // Attempt to restore draft on mount — returns undefined if none/corrupt/empty.
+  // A draft with no organization or position typed in is indistinguishable from
+  // the pristine autosave of a blank form (e.g. one captured before the real
+  // record's data had loaded, back when the edit form's defaultValues prop was
+  // never wired up — TEST-regression). Restoring that would silently blank out
+  // real data every time this experience is edited again, so treat it as if no
+  // draft existed and clear it rather than let it win the merge below.
   const restoredDraft = (() => {
     try {
       const raw = localStorage.getItem(draftKey);
       if (!raw) return undefined;
       const parsed = JSON.parse(raw) as DraftPayload;
       if (parsed && typeof parsed === 'object' && 'values' in parsed) {
+        if (!parsed.values.organization && !parsed.values.position) {
+          localStorage.removeItem(draftKey);
+          return undefined;
+        }
         return parsed;
       }
       localStorage.removeItem(draftKey);

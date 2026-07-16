@@ -60,6 +60,8 @@ function makeQc() {
 
 function renderForm(opts: {
   experienceId?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  defaultValues?: Record<string, any>;
   onSuccess?: () => void;
   onCancel?: () => void;
 }) {
@@ -72,6 +74,7 @@ function renderForm(opts: {
         categoryId={CAT_ID}
         ownerUserId={USER_ID}
         experienceId={opts.experienceId}
+        defaultValues={opts.defaultValues}
         onSuccess={onSuccess}
         onCancel={onCancel}
       />
@@ -210,5 +213,56 @@ describe('ExperienceForm — draft/autosave', () => {
 
     // No toast shown
     expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('does not let a stale near-empty draft (no organization/position) override real defaultValues (TEST-regression)', () => {
+    // Reproduces the "edit doesn't populate the form" bug: an earlier edit attempt
+    // (before CategoryPage wired up defaultValues) autosaved a blank/near-empty
+    // draft under this experience's key. Fixing the caller alone isn't enough —
+    // without this guard, that stale draft would still win the merge and blank
+    // out the real data every time this experience is edited again.
+    const draftKey = `asp:draft:${USER_ID}:${EXP_ID}`;
+    localStorage.setItem(
+      draftKey,
+      JSON.stringify({ values: { totalHours: 1, hoursPerWeek: 1, numberOfWeeks: 1 }, step: 0 }),
+    );
+
+    renderForm({
+      experienceId: EXP_ID,
+      defaultValues: {
+        organization: 'Real Org',
+        position: 'Real Position',
+        startDate: '2023-01-01',
+        dutiesNarrative: 'Real duties.',
+      },
+    });
+
+    const orgInput = screen.getByPlaceholderText('Organization name') as HTMLInputElement;
+    const posInput = screen.getByPlaceholderText('Your role or title') as HTMLInputElement;
+    expect(orgInput.value).toBe('Real Org');
+    expect(posInput.value).toBe('Real Position');
+
+    // The near-empty draft should be discarded, not just ignored for this render
+    expect(localStorage.getItem(draftKey)).toBeNull();
+
+    // No "Draft restored" toast for a draft we decided not to trust
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
+  it('does restore a draft that has real content over defaultValues, for an in-progress edit', () => {
+    const draftKey = `asp:draft:${USER_ID}:${EXP_ID}`;
+    localStorage.setItem(
+      draftKey,
+      JSON.stringify({ values: { organization: 'Edited Org' }, step: 0 }),
+    );
+
+    renderForm({
+      experienceId: EXP_ID,
+      defaultValues: { organization: 'Original Org', position: 'Original Position' },
+    });
+
+    const orgInput = screen.getByPlaceholderText('Organization name') as HTMLInputElement;
+    expect(orgInput.value).toBe('Edited Org');
+    expect(screen.getByRole('status')).toHaveTextContent('Draft restored');
   });
 });

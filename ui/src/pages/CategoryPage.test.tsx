@@ -491,6 +491,58 @@ describe('CategoryPage', () => {
     });
   });
 
+  it('editing an experience populates the form with its existing data (TEST-regression)', async () => {
+    // Reproduces the "flashes Draft restored but the form is empty" bug: the
+    // Edit modal never passed the fetched experience's data into
+    // ExperienceForm's defaultValues prop, so the form always rendered blank
+    // regardless of what was being edited. The API also serialises date
+    // columns as full ISO datetime strings (e.g. "2023-06-15T00:00:00.000Z"),
+    // not the plain YYYY-MM-DD the form's <input type="date"> requires — this
+    // fixture uses that real shape to also cover the date-normalisation step.
+    const qc = makeQueryClient({
+      experiences: [
+        makeExperience({
+          id: 'exp-1',
+          categoryId: 'cat-a',
+          organization: 'Acme Corp',
+          position: 'Researcher',
+          startDate: '2023-06-15T00:00:00.000Z',
+          dutiesNarrative: 'Ran experiments and wrote reports.',
+        }),
+      ],
+      rollup: [],
+    });
+
+    renderPage({ slug: 'research', queryClient: qc });
+
+    await waitFor(() => {
+      expect(screen.getByText('Acme Corp')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /^edit$/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /edit experience/i })).toBeInTheDocument();
+    });
+
+    const orgInput = screen.getByPlaceholderText('Organization name') as HTMLInputElement;
+    const posInput = screen.getByPlaceholderText('Your role or title') as HTMLInputElement;
+    expect(orgInput.value).toBe('Acme Corp');
+    expect(posInput.value).toBe('Researcher');
+
+    // Advance to the "Hours & dates" step to check the date field normalised correctly
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }));
+    const startDateInput = document.querySelector('input[name="startDate"]') as HTMLInputElement;
+    expect(startDateInput.value).toBe('2023-06-15');
+
+    // Advance to the final step to check the duties narrative populated
+    fireEvent.click(screen.getByRole('button', { name: /continue/i }));
+    expect(screen.getByDisplayValue('Ran experiments and wrote reports.')).toBeInTheDocument();
+
+    // No stray "Draft restored" toast on a fresh edit with no prior draft
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
   // -------------------------------------------------------------------------
   // Duties column — UI-043
   // -------------------------------------------------------------------------

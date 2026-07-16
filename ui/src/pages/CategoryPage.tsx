@@ -13,12 +13,48 @@ import { ExperienceForm } from '../components/ExperienceForm.js';
 import { Modal } from '../components/Modal.js';
 import { useDeleteExperience } from '../hooks/useDeleteExperience.js';
 import { goalMet } from '../lib/goals.js';
+import type { ExperienceFormValues } from '../forms/experienceFormSchema.js';
 
 type Category =
   paths['/api/experience-categories']['get']['responses'][200]['content']['application/json'][number];
 
 type Experience =
   paths['/api/experiences']['get']['responses'][200]['content']['application/json'][number];
+
+// The API serialises date columns as full ISO datetime strings
+// (e.g. "2026-01-15T00:00:00.000Z"); the form's <input type="date"> and its
+// Zod schema both require plain YYYY-MM-DD.
+function toDateInputValue(iso: string): string {
+  return iso.slice(0, 10);
+}
+
+function mapExperienceToFormDefaults(exp: Experience): Partial<ExperienceFormValues> {
+  return {
+    categoryId: exp.categoryId,
+    organization: exp.organization,
+    position: exp.position,
+    frequency: (exp.frequency ?? undefined) as ExperienceFormValues['frequency'],
+    startDate: toDateInputValue(exp.startDate),
+    endDate: exp.endDate ? toDateInputValue(exp.endDate) : null,
+    totalHours: exp.totalHours,
+    hoursPerWeek: exp.hoursPerWeek,
+    numberOfWeeks: exp.numberOfWeeks,
+    dutiesNarrative: exp.dutiesNarrative,
+    stateProvince: exp.stateProvince,
+    country: exp.country,
+    isCurrent: exp.isCurrent,
+    receivedAcademicCredit: exp.receivedAcademicCredit,
+    receivedSalaryOrPayment: exp.receivedSalaryOrPayment,
+    isVolunteer: exp.isVolunteer,
+    isMostImportant: exp.isMostImportant,
+    permissionToContact: exp.permissionToContact,
+    contactFirstName: exp.contactFirstName,
+    contactLastName: exp.contactLastName,
+    contactTitle: exp.contactTitle,
+    contactEmail: exp.contactEmail,
+    contactPhone: exp.contactPhone,
+  };
+}
 
 export function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -99,6 +135,12 @@ export function CategoryPage() {
     ? (experiences ?? []).filter((e) => e.categoryId === activeCategory.id)
     : [];
 
+  const editingExperience =
+    formMode && formMode !== 'create' ? experiences?.find((e) => e.id === formMode) : undefined;
+  const editFormDefaults = editingExperience
+    ? mapExperienceToFormDefaults(editingExperience)
+    : undefined;
+
   const categoryRollup = rollup?.find((r) => r.categoryId === activeCategory?.id);
 
   const handleFormSuccess = () => {
@@ -149,6 +191,7 @@ export function CategoryPage() {
               categoryId={activeCategory.id}
               ownerUserId={userId}
               experienceId={formMode === 'create' ? undefined : formMode}
+              defaultValues={editFormDefaults}
               onSuccess={handleFormSuccess}
               onCancel={handleFormCancel}
             />
@@ -297,6 +340,7 @@ export function CategoryPage() {
             categoryId={activeCategory.id}
             ownerUserId={userId}
             experienceId={formMode === 'create' ? undefined : formMode}
+            defaultValues={editFormDefaults}
             onSuccess={handleFormSuccess}
             onCancel={handleFormCancel}
           />
