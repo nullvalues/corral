@@ -2,25 +2,7 @@
   "permissions": {
     "allow": [
       "Edit(docs/architecture.md)",
-      "Write(docs/architecture.md)",
-      "Write(docs/phases/permissions/UAT-028.json)"
-    ],
-    "deny": [
-      "Edit(docs/phases/permissions/**)",
-      "Write(docs/phases/permissions/**)"
-    ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run python /mnt/work/flex/hooks/pre_tool_use.py"
-          }
-        ]
-      }
+      "Write(docs/architecture.md)"
     ]
   }
 }
