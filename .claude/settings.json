@@ -1,8 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Edit(docs/architecture.md)",
-      "Write(docs/architecture.md)"
+      "Edit(docs/architecture.md)"
     ]
   }
 }
