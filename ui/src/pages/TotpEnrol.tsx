@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import type { ReactElement, FormEvent } from 'react';
@@ -27,8 +27,17 @@ export function TotpEnrol(): ReactElement {
   const routePassword = (location.state as { password?: string } | null)?.password ?? '';
   const [code, setCode] = useState('');
 
-  const enableMutation = useMutation<EnableTotpResult, TotpEnrolError>({
-    mutationFn: async () => {
+  // `enable` unconditionally generates a brand-new TOTP secret and deletes the
+  // previous unverified one on every call — calling it twice silently invalidates
+  // whatever secret the user already scanned. This used to fire imperatively from
+  // useEffect+useMutation, which React StrictMode's dev-mode double-invoke breaks:
+  // the network call gets deduped, but useMutation's internal state subscription
+  // doesn't survive the simulated unmount/remount, so the UI got stuck "pending"
+  // forever. useQuery is what TanStack Query designs for exactly this "run once on
+  // mount" shape — its fetch is deduplicated and its observer is StrictMode-safe.
+  const enableQuery = useQuery<EnableTotpResult, TotpEnrolError>({
+    queryKey: ['two-factor-enable'],
+    queryFn: async () => {
       const res = await fetch('/api/auth/two-factor/enable', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,6 +50,10 @@ export function TotpEnrol(): ReactElement {
       }
       return res.json() as Promise<EnableTotpResult>;
     },
+    staleTime: Infinity,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const verifyMutation = useMutation<unknown, TotpEnrolError, string>({
@@ -62,40 +75,35 @@ export function TotpEnrol(): ReactElement {
     },
   });
 
-  useEffect(() => {
-    enableMutation.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   function handleSubmit(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
     verifyMutation.mutate(code);
   }
 
-  const backupCodes = enableMutation.data?.backupCodes ?? [];
+  const backupCodes = enableQuery.data?.backupCodes ?? [];
   const hasBackupCodes = backupCodes.length > 0;
 
   return (
     <AuthLayout>
       <h1 className="text-xl font-semibold text-text-default mb-6">Set up two-factor authentication</h1>
 
-      {enableMutation.isPending && (
+      {enableQuery.isPending && (
         <p className="text-sm text-text-default mb-4">Setting up TOTP…</p>
       )}
 
-      {enableMutation.isError && (
+      {enableQuery.isError && (
         <p role="alert" className="text-sm text-text-default mb-4">
-          {enableMutation.error.message}
+          {enableQuery.error.message}
         </p>
       )}
 
-      {enableMutation.data?.totpURI && (
+      {enableQuery.data?.totpURI && (
         <div className="mb-6 flex flex-col items-center gap-4">
           <p className="text-sm text-text-default text-center">
             Scan this QR code with your authenticator app.
           </p>
           <div data-testid="qr-code">
-            <QRCodeSVG value={enableMutation.data.totpURI} size={200} />
+            <QRCodeSVG value={enableQuery.data.totpURI} size={200} />
           </div>
           <div className="w-full mt-2">
             <p className="text-xs text-text-muted text-center mb-1">
@@ -105,7 +113,7 @@ export function TotpEnrol(): ReactElement {
               data-testid="totp-secret"
               className="font-mono text-sm text-text-default bg-surface-base border border-primary-200 rounded px-3 py-2 text-center select-all break-all"
             >
-              {new URL(enableMutation.data.totpURI).searchParams.get('secret')}
+              {new URL(enableQuery.data.totpURI).searchParams.get('secret')}
             </p>
           </div>
         </div>

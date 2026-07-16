@@ -1,3 +1,4 @@
+import { StrictMode } from 'react';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
@@ -28,6 +29,19 @@ function renderTotpEnrol(routeState?: Record<string, unknown>) {
         <TotpEnrol />
       </MemoryRouter>
     </QueryClientProvider>,
+  );
+}
+
+function renderTotpEnrolStrict(routeState?: Record<string, unknown>) {
+  const queryClient = makeQueryClient();
+  return render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={[{ pathname: '/enrol', state: routeState ?? null }]}>
+          <TotpEnrol />
+        </MemoryRouter>
+      </QueryClientProvider>
+    </StrictMode>,
   );
 }
 
@@ -311,6 +325,32 @@ describe('TotpEnrol', () => {
     });
     expect(screen.getByTestId('totp-secret')).toBeInTheDocument();
     expect(screen.getByTestId('totp-secret')).toHaveTextContent('SECRETKEY');
+  });
+
+  it('calls /two-factor/enable exactly once even under StrictMode double-invoke (TEST-regression)', async () => {
+    // Better Auth's /two-factor/enable generates a brand-new secret and deletes the
+    // previous unverified one on every call. StrictMode intentionally double-invokes
+    // mount effects in dev — without a guard, this silently orphans whichever secret
+    // the user already scanned into their authenticator app, and every code they
+    // enter afterwards fails as "invalid" with no indication why.
+    const totpURI = 'otpauth://totp/test?secret=ABCDEFGH';
+    vi.mocked(fetch).mockResolvedValue(
+      new Response(JSON.stringify({ totpURI, backupCodes: [] }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+
+    renderTotpEnrolStrict();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('qr-code')).toBeInTheDocument();
+    });
+
+    const enableCalls = vi
+      .mocked(fetch)
+      .mock.calls.filter(([url]) => String(url) === '/api/auth/two-factor/enable');
+    expect(enableCalls).toHaveLength(1);
   });
 
   it('does not use verify-otp endpoint anywhere', () => {
