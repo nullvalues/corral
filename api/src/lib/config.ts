@@ -92,6 +92,16 @@ const optInBoolean = z.preprocess(
   z.enum(['true', 'false']).transform((v) => v === 'true'),
 );
 
+/**
+ * `z.coerce.number()` converts an empty string to `0` (`Number('') === 0`),
+ * which silently satisfies a `.min(0)`-style bound and bypasses `.default()`
+ * — the default only applies to `undefined`, never to a coerced `0`. Every
+ * numeric env var below is wrapped with this so an unset/blank value defers
+ * to its `.default()` as intended, instead of quietly becoming zero.
+ */
+const coercedNumber = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((v) => (v === '' ? undefined : v), schema);
+
 const envSchema = z
   .object({
     SESSION_SECRET: z
@@ -123,17 +133,19 @@ const envSchema = z
             .map((entry) => (isValidUrl(entry) ? canonicaliseOrigin(entry) : entry)),
         ),
     ),
-    PORT: z.coerce
-      .number()
-      .int()
-      .min(6050, 'PORT must be in the Corral Talent dev range 6050–6059')
-      .max(6059, 'PORT must be in the Corral Talent dev range 6050–6059')
-      .default(6050),
+    PORT: coercedNumber(
+      z.coerce
+        .number()
+        .int()
+        .min(6050, 'PORT must be in the Corral Talent dev range 6050–6059')
+        .max(6059, 'PORT must be in the Corral Talent dev range 6050–6059')
+        .default(6050),
+    ),
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),
     MFA_ENABLED: mfaBoolean,
-    MFA_GRACE_HOURS: z.coerce.number().int().min(0).default(24),
+    MFA_GRACE_HOURS: coercedNumber(z.coerce.number().int().min(0).default(24)),
     DATABASE_URL: z.string().url(),
     // Empty string is treated as "not provided" — allows the unit Vitest project
     // to explicitly null out DATABASE_URL_TEST from the shell env by setting it
@@ -157,10 +169,10 @@ const envSchema = z
     //
     // All three default to sane values and are optional so existing deployments
     // that do not set them continue to work at the defaults.
-    RATE_LIMIT_MAX_AUTH: z.coerce.number().int().positive().default(10),
-    RATE_LIMIT_MAX_MFA: z.coerce.number().int().positive().default(10),
-    RATE_LIMIT_MAX_API: z.coerce.number().int().positive().default(30),
-    RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().optional(),
+    RATE_LIMIT_MAX_AUTH: coercedNumber(z.coerce.number().int().positive().default(10)),
+    RATE_LIMIT_MAX_MFA: coercedNumber(z.coerce.number().int().positive().default(10)),
+    RATE_LIMIT_MAX_API: coercedNumber(z.coerce.number().int().positive().default(30)),
+    RATE_LIMIT_WINDOW_MS: coercedNumber(z.coerce.number().int().positive().optional()),
     // Mailer provider selection. 'console' (default) logs to stdout only.
     // 'resend' wires the Resend adapter (INFRA-020/021).
     MAILER_PROVIDER: z.enum(['console', 'resend']).default('console'),
@@ -184,11 +196,9 @@ const envSchema = z
     // Session lifetime in hours. Default 168 = 7 days, matching the Better Auth
     // built-in default. Operators requiring shorter sessions (e.g. 8h in a
     // healthcare context) can override without a code change.
-    SESSION_DURATION_HOURS: z.coerce
-      .number()
-      .int()
-      .positive()
-      .default(168),
+    SESSION_DURATION_HOURS: coercedNumber(
+      z.coerce.number().int().positive().default(168),
+    ),
   })
   .superRefine((val, ctx) => {
     // ALLOWED_ORIGINS must contain at least one entry, and every entry must be
