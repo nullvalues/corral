@@ -126,9 +126,8 @@ david@halfhorse.com
 
 ---
 
-_These four documents should be sufficient for any model or toolchain to cold-start this project and reproduce a valid variant without prior session context._
+_These three documents should be sufficient for any model or toolchain to cold-start this project and reproduce a valid variant without prior session context._
 
 - `docs/brief.md` — what and why (operator intent)
 - `docs/ideology.md` — convictions, value hierarchy, accepted constraints
 - `docs/architecture.md` — how and architectural decisions
-- Current phase file from `docs/phases/`

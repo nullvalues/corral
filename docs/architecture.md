@@ -1028,7 +1028,7 @@ the pool level.
 
 **Status:** Accepted (2026-05-28, Phase 5)
 
-**Decision:** The `pii_access_log` table records who read or changed contact PII on an experience. It is strictly append-only: application code never issues `UPDATE` or `DELETE` against it. Because the table is an append-only audit log, it qualifies for the schema-gate exception documented in `docs/phases/` — no dedicated management UI is required for this table.
+**Decision:** The `pii_access_log` table records who read or changed contact PII on an experience. It is strictly append-only: application code never issues `UPDATE` or `DELETE` against it. Because the table is an append-only audit log — every new table otherwise needs a management surface reachable from the UI, but audit/event logs are append-only by design and are observed via logs rather than edited — no dedicated management UI is required for this table.
 
 **Rationale:** An audit log's value comes from its immutability. Allowing updates or deletes would undermine the non-repudiation guarantee that makes the log useful for compliance and access review. The append-only constraint means: no edit form, no delete button, and no admin CRUD API are needed or appropriate. Future observability tooling (a log viewer or an export endpoint) may surface these records, but that is a read-only concern, not a management concern. This exception is explicitly noted here so the absence of a management UI story for `pii_access_log` is deliberate and documented, not an oversight.
 

@@ -16,8 +16,6 @@ Start here. Links are grouped by audience.
 
 - [Project brief](brief.md) — what and why (operator intent)
 - [Ideology](ideology.md) — design philosophy and principles
-- [Reconstruction guide](reconstruction.md) — reproducing this project from scratch
-- [Eras](eras/) — historical snapshots of the project's evolution
 
 ---
 

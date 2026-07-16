@@ -20,8 +20,8 @@ for manual QA read `docs/uat.md`.
 ## 2. Clone + install
 
 ```bash
-git clone git@github.com:nullvalues/asp.git
-cd asp
+git clone git@github.com:nullvalues/corral.git
+cd corral
 pnpm install
 ```
 

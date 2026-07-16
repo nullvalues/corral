@@ -31,7 +31,7 @@ React 19 + Vite + TypeScript + Tailwind CSS (UI); Fastify + Drizzle + Better Aut
 
 ## Quick start
 
-1. `git clone git@github.com:nullvalues/asp.git && cd asp`
+1. `git clone git@github.com:nullvalues/corral.git && cd corral`
 2. `pnpm install`
 3. Create `.env.local` from `.env.example` and configure:
    - `DATABASE_URL`: PostgreSQL 15+ connection string (local or remote)
@@ -52,18 +52,15 @@ React 19 + Vite + TypeScript + Tailwind CSS (UI); Fastify + Drizzle + Better Aut
 - **[Ideology](docs/ideology.md)** — project convictions and constraints
 - **[HTML reference docs](docs/site/index.html)** — generated API docs
 
-## How this repo was built
+## Design philosophy
 
-This codebase was built and evolved using an in-repo agent loop:
-- **`CLAUDE.md`** — project charter and build guidelines
-- **`.claude/agents/`** — task-specific orchestrator agents
+The reference implementation is intentionally designed to be reconstructible from
+its documentation:
+- **`docs/ideology.md`** — convictions, value hierarchy, and accepted constraints
+- **`docs/architecture.md`** — how those constraints are implemented, and why
 
-The reference implementation is intentionally designed to be **reconstructible**.
-You can attempt an independent n-version rebuild using:
-- **`docs/ideology.md`** — architectural principles and constraints
-- **`docs/reconstruction.md`** — detailed rebuild narrative
-
-See these files to understand the design philosophy and reasoning.
+See these files to understand the design philosophy and reasoning behind the
+codebase's rules.
 
 ## License
 
