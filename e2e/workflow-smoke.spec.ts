@@ -1,7 +1,7 @@
 // E2E authenticated workflow smoke tests — one per role.
 //
 // Pre-requisites:
-//   - Running API + UI servers (API on :6050, UI on :6051)
+//   - Running API + UI servers (API on :6080, UI on :6081)
 //   - Seeded database: pnpm --filter @asp/api db:seed (creates active categories)
 //   - UAT sessions: pnpm uat:setup (provisions applicant, mentor, admin storageState files)
 //
@@ -26,7 +26,7 @@ async function signOutAndAssert(page: import('@playwright/test').Page): Promise<
   // Better Auth requires a trusted Origin for CSRF on sign-out. Playwright's
   // APIRequestContext doesn't set Origin automatically; set it to the UI origin
   // which is in trustedOrigins so Better Auth accepts the CSRF check.
-  const baseUrl = process.env['BASE_URL'] ?? 'http://localhost:6051';
+  const baseUrl = process.env['BASE_URL'] ?? 'http://localhost:6081';
   const signOutRes = await page.request.post('/api/auth/sign-out', {
     headers: { 'Content-Type': 'application/json', Origin: baseUrl },
   });

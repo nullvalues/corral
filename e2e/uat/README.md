@@ -20,7 +20,7 @@ This single command (defined in the root `package.json`) runs the full UAT flow
 end to end:
 
 1. Starts the monorepo dev servers (`pnpm dev`).
-2. Waits for the API health endpoint (`http://localhost:6050/api/health`) to
+2. Waits for the API health endpoint (`http://localhost:6080/api/health`) to
    become ready (up to 120 s).
 3. Runs `pnpm seed:uat` to provision the three stable UAT accounts (applicant,
    mentor, admin), enrol TOTP for each, and write
@@ -55,14 +55,14 @@ The runner merges the following sources (later values win):
 |---|---|---|
 | `DATABASE_URL` | *(required)* | Postgres connection string for seed:uat |
 | `SESSION_SECRET` | *(required)* | Passed to the API server |
-| `ALLOWED_ORIGIN` | `http://localhost:6051` | API CORS origin |
+| `ALLOWED_ORIGIN` | `http://localhost:6081` | API CORS origin |
 | `MFA_ENABLED` | `true` | Set in .env.local |
-| `PORT` | `6050` | API listen port |
+| `PORT` | `6080` | API listen port |
 | `NODE_ENV` | `development` | Set in .env.local |
 | `UAT` | `true` | Forced by `e2e/.env.uat`; registers `/api/uat/*` routes |
 | `MAILER_PROVIDER` | `console` | Forced by `e2e/.env.uat`; no live email required |
-| `API_BASE` | `http://localhost:6050` | Passed to seed:uat |
-| `BASE_URL` | `http://localhost:6051` | Playwright base URL |
+| `API_BASE` | `http://localhost:6080` | Passed to seed:uat |
+| `BASE_URL` | `http://localhost:6081` | Playwright base URL |
 
 > **Note:** `pnpm uat` always starts `pnpm dev` (dev servers) regardless of the
 > `CI` environment variable — it strips `CI` before invoking Playwright to force

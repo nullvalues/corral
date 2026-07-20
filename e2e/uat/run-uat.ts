@@ -24,14 +24,14 @@
  * Environment variables (read from root .env.local + e2e/.env.uat):
  *   DATABASE_URL       — required for seed:uat (Postgres connection string)
  *   SESSION_SECRET     — required for the API server
- *   ALLOWED_ORIGIN     — required for the API server (default http://localhost:6051)
+ *   ALLOWED_ORIGIN     — required for the API server (default http://localhost:6081)
  *   MFA_ENABLED        — default true
- *   PORT               — default 6050
+ *   PORT               — default 6080
  *   NODE_ENV           — default development
  *   UAT                — forced true (from e2e/.env.uat) — registers /api/uat/* routes
  *   MAILER_PROVIDER    — forced console (from e2e/.env.uat)
- *   API_BASE           — passed to seed:uat (default http://localhost:6050)
- *   BASE_URL           — Playwright base URL (default http://localhost:6051)
+ *   API_BASE           — passed to seed:uat (default http://localhost:6080)
+ *   BASE_URL           — Playwright base URL (default http://localhost:6081)
  *
  * Exit-code contract:
  *   0   — seeding and setup succeeded and all targeted specs passed
@@ -68,7 +68,7 @@ const ROOT_ENV_LOCAL = path.join(MONOREPO_ROOT, '.env.local');
 const UAT_ENV_FILE = path.join(MONOREPO_ROOT, 'e2e', '.env.uat');
 
 // Readiness probe: API health endpoint
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6080';
 const HEALTH_URL = `${API_BASE}/api/health`;
 
 /** How long to wait for the API to become ready (ms) */
@@ -290,8 +290,8 @@ async function main(): Promise<void> {
     const playwrightEnv: NodeJS.ProcessEnv = {
       ...childEnv,
       // Ensure playwright uses the correct base URLs
-      BASE_URL: childEnv['BASE_URL'] ?? 'http://localhost:6051',
-      API_BASE: childEnv['API_BASE'] ?? 'http://localhost:6050',
+      BASE_URL: childEnv['BASE_URL'] ?? 'http://localhost:6081',
+      API_BASE: childEnv['API_BASE'] ?? 'http://localhost:6080',
       // Strip CI so playwright reuses the running servers
       CI: undefined,
     };

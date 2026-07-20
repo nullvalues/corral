@@ -6,7 +6,7 @@
 
 ## Before you begin
 
-- The UAT seed has been run (`pnpm seed:uat`) and both servers are running (`pnpm dev` — API on `http://localhost:6050`, UI on `http://localhost:6051`).
+- The UAT seed has been run (`pnpm seed:uat`) and both servers are running (`pnpm dev` — API on `http://localhost:6080`, UI on `http://localhost:6081`).
 - The seed has provisioned the mentor account, the UAT applicant account, and an **active mentor grant** linking the mentor to the applicant. It has also created one sample experience owned by the applicant (`UAT Sample Hospital` / `Volunteer`) with `permissionToContact=false` and contact details `Jane Smith`, `jane.smith@uatsample.com`, `+15551234567`.
 - TOTP has been set up for both the mentor and the applicant accounts (`pnpm uat:setup`) and the secrets are enrolled in your authenticator app. See `docs/uat.md` § Setting up TOTP for each role.
 - Each sign-in requires a TOTP code. After submitting email + password the app redirects to the TOTP challenge page (`/enrol`); open your authenticator app, get the current 6-digit code for that account, enter it, and click **Verify** to complete sign-in.
@@ -28,7 +28,7 @@ Fill in the **Pass/Fail** column for each step. Record any failure in the defect
 
 | Step | Action | Expected result | Pass/Fail |
 |------|--------|-----------------|-----------|
-| 1 | In the **mentor window**, navigate to `http://localhost:6051/sign-in`. | The **Sign in** page loads with an **Email** field, a **Password** field, and a **Sign in** button. | |
+| 1 | In the **mentor window**, navigate to `http://localhost:6081/sign-in`. | The **Sign in** page loads with an **Email** field, a **Password** field, and a **Sign in** button. | |
 | 2 | In the **Email** field, type `uat-mentor@asp.dev`. | The email appears in the field. | |
 | 3 | In the **Password** field, type `UatMentor1!`. | The password is masked in the field. | |
 | 4 | Click the **Sign in** button. | The page redirects to the TOTP challenge page (`/enrol`). | |
@@ -48,7 +48,7 @@ Fill in the **Pass/Fail** column for each step. Record any failure in the defect
 
 | Step | Action | Expected result | Pass/Fail |
 |------|--------|-----------------|-----------|
-| 13 | In the **applicant window** (incognito / private), navigate to `http://localhost:6051/sign-in`. | The **Sign in** page loads. | |
+| 13 | In the **applicant window** (incognito / private), navigate to `http://localhost:6081/sign-in`. | The **Sign in** page loads. | |
 | 14 | Sign in as `uat-applicant@asp.dev` with password `UatApplicant1!`, then click **Sign in**. When redirected to `/enrol`, enter the TOTP code from your authenticator app for the applicant account and click **Verify**. | You land on the applicant's Experiences page. | |
 | 15 | Click the category tab containing the `UAT Sample Hospital` experience, then in that row click the **Edit** button. | A modal opens titled **Edit Experience** with the form pre-filled with the experience's values. | |
 | 16 | In the **Contact** section of the form, tick the **Permission to contact** checkbox. | The **Permission to contact** checkbox becomes checked. | |

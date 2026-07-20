@@ -1,6 +1,6 @@
 // E2E tests require live dev servers:
-//   API: pnpm --filter @asp/api dev  (port 6050)
-//   UI:  pnpm --filter @asp/ui dev   (port 6051)
+//   API: pnpm --filter @asp/api dev  (port 6080)
+//   UI:  pnpm --filter @asp/ui dev   (port 6081)
 // Not included in CI — intended for local pre-merge runs.
 //
 // The per-role sign-in tests (TEST-029) additionally require:
@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
 import { generateSync } from 'otplib';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6080';
 
 // ---------------------------------------------------------------------------
 // UAT per-role login + TOTP tests (TEST-029)

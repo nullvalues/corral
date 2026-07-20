@@ -6,8 +6,8 @@
  *
  * Requires:
  *   - DATABASE_URL set in the environment
- *   - Running API server (API_BASE, default http://localhost:6050)
- *   - Running UI server (BASE_URL, default http://localhost:6051)
+ *   - Running API server (API_BASE, default http://localhost:6080)
+ *   - Running UI server (BASE_URL, default http://localhost:6081)
  *
  * Outputs three storageState files and three TOTP secret sidecar files in
  * os.tmpdir(). Prints secrets and paths to stdout for operator reference.

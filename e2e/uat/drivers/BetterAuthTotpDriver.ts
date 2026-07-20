@@ -37,8 +37,8 @@ import { fileURLToPath } from 'node:url';
 import { generateTotpCode } from '../helpers/totp';
 import type { AuthDriver } from '../AuthDriver';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
-const BASE_URL = process.env['BASE_URL'] ?? 'http://localhost:6051';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6080';
+const BASE_URL = process.env['BASE_URL'] ?? 'http://localhost:6081';
 
 /** Shape of one entry in e2e/uat/.uat-secrets.json */
 interface UatSecretEntry {

@@ -25,6 +25,6 @@ COPY docker/entrypoint.sh /app/docker/entrypoint.sh
 RUN chmod +x /app/docker/entrypoint.sh
 ENV NODE_ENV=production
 ENV STATIC_UI_ROOT=/app/ui/dist
-EXPOSE 6050
+EXPOSE 6080
 ENTRYPOINT ["/app/docker/entrypoint.sh"]
 CMD ["serve"]

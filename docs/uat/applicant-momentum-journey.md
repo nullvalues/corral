@@ -6,7 +6,7 @@
 
 ## Before you begin
 
-- The UAT seed has been run (`pnpm seed:uat`) and both servers are running (`pnpm dev` — API on `http://localhost:6050`, UI on `http://localhost:6051`).
+- The UAT seed has been run (`pnpm seed:uat`) and both servers are running (`pnpm dev` — API on `http://localhost:6080`, UI on `http://localhost:6081`).
 - TOTP has been set up for the applicant account (`pnpm uat:setup`) and the secret is enrolled in your authenticator app. See `docs/uat.md` § Setting up TOTP for each role.
 - For step 3 (signing in), when prompted for TOTP, open your authenticator app, get the current 6-digit code for this account, enter it, and click **Verify**.
 - Fill in the **Pass/Fail** column for each step. Record any failure in the defect log in `docs/uat/sign-off.md`.
@@ -21,7 +21,7 @@ Automated coverage of the same derivation (readiness calculation) and debounce l
 
 | Step | Action | Expected result | Pass/Fail |
 |------|--------|-----------------|-----------|
-| 1 | In a browser, navigate to `http://localhost:6051/sign-in`. | The **Sign in** page loads with an **Email** field, a **Password** field, and a **Sign in** button. | |
+| 1 | In a browser, navigate to `http://localhost:6081/sign-in`. | The **Sign in** page loads with an **Email** field, a **Password** field, and a **Sign in** button. | |
 | 2 | In the **Email** field, type `uat-applicant@asp.dev`. | The email appears in the field. | |
 | 3 | In the **Password** field, type `UatApplicant1!`. | The password is masked in the field. | |
 | 4 | Click the **Sign in** button. | The page redirects to the TOTP challenge page (`/enrol`). | |

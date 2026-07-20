@@ -565,7 +565,7 @@ pnpm typecheck && pnpm test
 pnpm lint
 
 # Dev servers (both packages concurrently)
-pnpm dev   # API on :6050, UI on :6051
+pnpm dev   # API on :6080, UI on :6081
 
 # Per-package (useful in CI)
 pnpm --filter @asp/api typecheck
@@ -623,11 +623,11 @@ These files are working and must not be modified without a stated reason:
 
 | Port | Service |
 |------|---------|
-| 6050 | @asp/api (Fastify) |
-| 6051 | @asp/ui (Vite) |
-| 6052–6059 | Reserved for Corral Talent dev services (unassigned) |
+| 6080 | @asp/api (Fastify) |
+| 6081 | @asp/ui (Vite) |
+| 6082–6089 | Reserved for Corral Talent dev services (unassigned) |
 
-All Corral Talent dev servers must bind in the 6050–6059 range (constraint from
+All Corral Talent dev servers must bind in the 6080–6089 range (constraint from
 `docs/brief.md` and `docs/ideology.md`). No Corral Talent dev process may use a port
 outside this range.
 
@@ -1062,7 +1062,7 @@ the pool level.
 
 **Constraints preserved:**
 - `ALLOWED_ORIGINS` remains required in all environments (enforced at startup). Incoming CORS requests from cross-origin API clients are gated via the CORS policy (ADR-001/ADR-002).
-- Development workflow unchanged: `pnpm dev` starts two independent servers (`@asp/api` on :6050, `@asp/ui` on :6051). No build step required for local iteration.
+- Development workflow unchanged: `pnpm dev` starts two independent servers (`@asp/api` on :6080, `@asp/ui` on :6081). No build step required for local iteration.
 - Test suite unaffected: `STATIC_UI_ROOT` is absent in test environments; `staticUi.ts` has no-op pass-through logic for an unset variable.
 
 **No-op in dev/test:** The plugin checks `if (!config.STATIC_UI_ROOT) return;` at registration time. When the variable is absent or empty, the plugin performs no registration or route binding. Note: `@fastify/static` must be listed in `api/package.json` `dependencies` (not `devDependencies`) because the top-level ESM `import FastifyStatic from '@fastify/static'` is evaluated at module load time regardless of whether `STATIC_UI_ROOT` is set — a devDependency would be pruned from a production `node_modules` and crash the process on startup with `ERR_MODULE_NOT_FOUND`.
@@ -1126,19 +1126,19 @@ All five are NOT NULL columns; no `IS NULL OR` guard is needed (contrast with nu
 
 ---
 
-### ADR-028 — Single-container deployment: API serves UI; docker-compose app layer only; PORT 6050–6059 (Phase 12, INFRA-024/029)
+### ADR-028 — Single-container deployment: API serves UI; docker-compose app layer only; PORT 6080–6089 (Phase 12, INFRA-024/029)
 
 **Status:** Accepted (2026-06-01, Phase 12)
 
-**Decision:** Production deployment is a single container. The API serves the built UI via `@fastify/static` (ADR-024). `docker-compose.yml` contains the app service only — no Postgres service. HTTPS is terminated by the host platform. The `PORT` environment variable must be in the range 6050–6059. Lifecycle operations (migrations, seeding, admin promotion) dispatch via ENTRYPOINT to `migrate`, `serve`, `seed`, or `admin:promote` subcommands.
+**Decision:** Production deployment is a single container. The API serves the built UI via `@fastify/static` (ADR-024). `docker-compose.yml` contains the app service only — no Postgres service. HTTPS is terminated by the host platform. The `PORT` environment variable must be in the range 6080–6089. Lifecycle operations (migrations, seeding, admin promotion) dispatch via ENTRYPOINT to `migrate`, `serve`, `seed`, or `admin:promote` subcommands.
 
-**Rationale:** A Postgres service in compose would introduce a local-infra dependency that downstream forks would have to audit and remove to avoid accidentally deploying a database alongside the app. Layer hygiene is maintained when the app container and the database are independently lifecycle-managed, mirroring production topology where the database runs separately (RDS, Managed Postgres, etc.). Single-container simplicity is appropriate for the reference implementation; orchestration (multi-container, K8s, etc.) is a downstream concern. The PORT range constraint (6050–6059) is a Corral Talent project requirement documented in `docs/brief.md` and enforced by `api/src/lib/config.ts`; platforms injecting `PORT` outside this range require `config.ts` relaxation — out of scope for the reference implementation.
+**Rationale:** A Postgres service in compose would introduce a local-infra dependency that downstream forks would have to audit and remove to avoid accidentally deploying a database alongside the app. Layer hygiene is maintained when the app container and the database are independently lifecycle-managed, mirroring production topology where the database runs separately (RDS, Managed Postgres, etc.). Single-container simplicity is appropriate for the reference implementation; orchestration (multi-container, K8s, etc.) is a downstream concern. The PORT range constraint (6080–6089) is a Corral Talent project requirement documented in `docs/brief.md` and enforced by `api/src/lib/config.ts`; platforms injecting `PORT` outside this range require `config.ts` relaxation — out of scope for the reference implementation.
 
 **Consequences:**
 
 1. **Database is external.** Operators must supply a running Postgres instance (separate from compose). Connection details are provided via `DATABASE_URL` environment variable.
 2. **HTTPS termination is the platform's responsibility.** The app binds to HTTP; the host platform (reverse proxy, load balancer, container orchestrator) provides TLS termination.
-3. **Port constraint is enforced.** Platforms injecting `PORT` outside 6050–6059 will cause `config.ts` startup validation to fail with a ConfigError. No automatic port relaxation is implemented.
+3. **Port constraint is enforced.** Platforms injecting `PORT` outside 6080–6089 will cause `config.ts` startup validation to fail with a ConfigError. No automatic port relaxation is implemented.
 4. **Entrypoint dispatch.** The container starts with a shell entrypoint that dispatches to Fastify `start` or a CLI subcommand based on the command argument. Example: `docker run asp:latest migrate` runs the migration CLI; `docker run asp:latest` (or `docker run asp:latest serve`) starts the API server.
 
 **Alternative rejected:** Including a Postgres service in compose. Rejected because it silently introduces a local-infra dependency that would require downstream forks to audit and remove. Separating the database layer improves transparency and matches production topology where the database is independently managed.
@@ -1158,8 +1158,8 @@ All five are NOT NULL columns; no `IS NULL OR` guard is needed (contrast with nu
 **Updated mechanism (INFRA-038):** `playwright.config.ts` resolves all server configuration from environment variables with documented defaults. There is no `process.env.CI` branch:
 
 - **`CONTAINER_IMAGE`** — when set (e.g. `asp:local`), the `webServer` command is `docker run --rm --name asp-e2e --network host … <image> serve`. When absent, the command is `pnpm dev` (starts monorepo dev servers).
-- **`BASE_URL`** — the `baseURL` Playwright uses for navigation. Defaults to `http://localhost:6050` when `CONTAINER_IMAGE` is set, and `http://localhost:6051` otherwise.
-- **`READINESS_URL`** — the URL Playwright polls before any test starts. Defaults to `http://localhost:6050/api/health` when `CONTAINER_IMAGE` is set, or `${BASE_URL}/api/health` otherwise.
+- **`BASE_URL`** — the `baseURL` Playwright uses for navigation. Defaults to `http://localhost:6080` when `CONTAINER_IMAGE` is set, and `http://localhost:6081` otherwise.
+- **`READINESS_URL`** — the URL Playwright polls before any test starts. Defaults to `http://localhost:6080/api/health` when `CONTAINER_IMAGE` is set, or `${BASE_URL}/api/health` otherwise.
 - **`reuseExistingServer`** — `false` when `CI` is set (forces a clean start); `true` otherwise (allows local developers to reuse a running server).
 
 The container is started with `--rm` so Docker removes it automatically when the process exits. Playwright's `webServer` lifecycle manages process shutdown for both Docker and `pnpm dev`.
@@ -1229,13 +1229,13 @@ ADR-027 established `MailerClient` as the single email seam and confined the Res
 
 **Status:** Accepted (2026-06-22, Phase PM022-main)
 
-**Context:** Better Auth performs an Origin-header CSRF check on authenticated endpoints (`/api/auth/two-factor/enable`, `/api/auth/two-factor/verify-totp`, `/api/auth/sign-out`, and any endpoint that requires a session). In production, the UI and API share the same origin (ADR-024), so the check passes automatically. In dev mode, the Vite dev server (port 6051) proxies `/api` requests to the API (port 6050) — the proxy rewrites the host but the browser sends `Origin: http://localhost:6051`, which does not match the API's own origin. Without explicitly listing this origin in BA's `trustedOrigins`, all CSRF-checked requests from the Vite proxy are rejected with 403.
+**Context:** Better Auth performs an Origin-header CSRF check on authenticated endpoints (`/api/auth/two-factor/enable`, `/api/auth/two-factor/verify-totp`, `/api/auth/sign-out`, and any endpoint that requires a session). In production, the UI and API share the same origin (ADR-024), so the check passes automatically. In dev mode, the Vite dev server (port 6081) proxies `/api` requests to the API (port 6080) — the proxy rewrites the host but the browser sends `Origin: http://localhost:6081`, which does not match the API's own origin. Without explicitly listing this origin in BA's `trustedOrigins`, all CSRF-checked requests from the Vite proxy are rejected with 403.
 
 **Decision:** `buildAuthConfig(isProduction, allowedOrigins?: string[])` in `api/src/services/auth/index.ts` accepts the value of `config.ALLOWED_ORIGINS` (a string array) and passes it as `trustedOrigins: allowedOrigins`. The module-level `auth` instance passes `config.ALLOWED_ORIGINS` at startup. (Before INFRA-052 the parameter was a single `allowedOrigin?` string sourced from `config.ALLOWED_ORIGIN`; INFRA-052 made both the config value and this parameter a comma-separated list / array.)
 
 **Consequence:** Any code that calls `buildAuthConfig(false)` without the second argument will produce a BA instance with `trustedOrigins: []` (the parameter defaults to `[]`). Integration tests that exercise CSRF-checked BA endpoints must either pass a matching `allowedOrigins` array or set the `Origin` header on the request to match the server's own origin.
 
-**Alternative rejected:** Setting `trustedOrigins` to a wildcard or to a fixed `['http://localhost:6051']`. Rejected because wildcard trust would allow any origin to bypass CSRF and a hardcoded localhost value would not survive environment changes. Using `ALLOWED_ORIGINS` keeps trustedOrigins in sync with the CORS allow-list for the environment.
+**Alternative rejected:** Setting `trustedOrigins` to a wildcard or to a fixed `['http://localhost:6081']`. Rejected because wildcard trust would allow any origin to bypass CSRF and a hardcoded localhost value would not survive environment changes. Using `ALLOWED_ORIGINS` keeps trustedOrigins in sync with the CORS allow-list for the environment.
 
 ---
 
@@ -1531,6 +1531,6 @@ themselves — the remote DB is the operator's responsibility.
 - Rate limiting: three per-group caps `RATE_LIMIT_MAX_AUTH` (default 10, covers sign-in/sign-up/password-reset/change-password), `RATE_LIMIT_MAX_MFA` (default 10, covers verify-totp), `RATE_LIMIT_MAX_API` (default 30, covers experiences/mentor-grant-requests), all sharing `RATE_LIMIT_WINDOW_MS` (default 60 000 ms). Groups use isolated keyGenerator counters. INFRA-053.
 - `MFA_ENABLED=false` is rejected in `NODE_ENV=production` at config layer.
   This gate exists from Phase 1, before Better Auth is wired.
-- All Corral Talent dev servers bind in port range 6050–6059.
+- All Corral Talent dev servers bind in port range 6080–6089.
 - UI never imports runtime code from `api/`. `ui/src/api-types.ts` is generated from the OpenAPI spec via `pnpm --filter @asp/api generate:openapi && pnpm --filter @asp/ui generate:types` and committed; CI drift check enforces no divergence (API-014). Local variant uses `--env-file=.env.local`; CI uses `generate:openapi:ci` (plain tsx, env vars from runner). The reviewer continues to verify no runtime `api/` imports exist in `ui/`.
 - Drizzle schema (`api/src/db/schema/`) is PROTECTED from Phase 2 onward.

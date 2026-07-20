@@ -14,9 +14,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildApp } from '../src/app.js';
 
 const ENV_STUBS = {
-  PORT: '6050',
+  PORT: '6080',
   SESSION_SECRET: 'a'.repeat(64),
-  ALLOWED_ORIGINS: 'http://localhost:6051',
+  ALLOWED_ORIGINS: 'http://localhost:6081',
   NODE_ENV: 'test',
   MFA_ENABLED: 'true',
 } as const;

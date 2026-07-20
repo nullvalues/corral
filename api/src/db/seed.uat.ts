@@ -15,7 +15,7 @@
  * See docs/architecture.md § Layer rules.
  *
  * Usage: pnpm seed:uat
- * Requires: DATABASE_URL, API_BASE (e.g. http://localhost:6050)
+ * Requires: DATABASE_URL, API_BASE (e.g. http://localhost:6080)
  */
 
 import 'dotenv/config';
@@ -48,7 +48,7 @@ if (!DATABASE_URL) {
   process.exit(1);
 }
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6080';
 const ORIGIN = API_BASE;
 
 // ---------------------------------------------------------------------------

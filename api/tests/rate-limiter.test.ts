@@ -18,13 +18,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const BASE_ENV = {
-  PORT: '6050',
+  PORT: '6080',
   SESSION_SECRET: 'a'.repeat(64),
   NODE_ENV: 'test',
   MFA_ENABLED: 'true',
   DATABASE_URL: 'postgresql://asp:asp@localhost:5432/asp',
   DATABASE_URL_TEST: '',
-  ALLOWED_ORIGINS: 'http://localhost:6051',
+  ALLOWED_ORIGINS: 'http://localhost:6081',
 } as const;
 
 async function importBuildApp(): Promise<

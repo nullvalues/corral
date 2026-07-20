@@ -30,7 +30,7 @@ const PASSWORD = process.env['UAT_MENTOR_PASSWORD'] ?? 'UatMentor1!';
 
 const APPLICANT_EMAIL = process.env['UAT_APPLICANT_EMAIL'] ?? 'uat-applicant@asp.dev';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6080';
 
 const driver = new BetterAuthTotpDriver(
   path.join(os.tmpdir(), 'uat-mentor.json'),
@@ -39,7 +39,7 @@ const driver = new BetterAuthTotpDriver(
 
 export const storageStatePath = driver.storageStatePath;
 
-const BASE_URL = process.env['BASE_URL'] ?? 'http://localhost:6051';
+const BASE_URL = process.env['BASE_URL'] ?? 'http://localhost:6081';
 
 export async function setup(): Promise<void> {
   const sidecarPath = `${storageStatePath}.totp-secret.txt`;

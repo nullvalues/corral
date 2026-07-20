@@ -12,8 +12,8 @@
  * re-running the sign-in flow.
  *
  * Base URLs:
- *   App:  process.env['BASE_URL']  ?? 'http://localhost:6051'
- *   API:  process.env['API_BASE']  ?? 'http://localhost:6050'
+ *   App:  process.env['BASE_URL']  ?? 'http://localhost:6081'
+ *   API:  process.env['API_BASE']  ?? 'http://localhost:6080'
  */
 
 export interface AuthDriver {

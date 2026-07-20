@@ -128,7 +128,7 @@ export async function ensureAccount(
  *
  * @param email      The account email address.
  * @param password   The account password.
- * @param apiBase    The API base URL (e.g. http://localhost:6050).
+ * @param apiBase    The API base URL (e.g. http://localhost:6080).
  * @param origin     The Origin header value to send (usually == apiBase).
  */
 export async function enrollTotp(

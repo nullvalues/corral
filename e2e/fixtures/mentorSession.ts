@@ -17,7 +17,7 @@ import { signUpAndEnrolTotp, signInWithTotp, writeStorageState } from '../helper
 
 export const mentorSessionFile = path.join(os.tmpdir(), 'asp-mentor-session.json');
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6080';
 
 export async function setupMentorSession(): Promise<{ userId: string; email: string }> {
   const email = `mentor+${randomUUID()}@example.com`;

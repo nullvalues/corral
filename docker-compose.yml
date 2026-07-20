@@ -11,10 +11,10 @@ services:
     image: asp:local
     env_file: .env.production
     ports:
-      - "6050:6050"
+      - "6080:6080"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:6050/api/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:6080/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3

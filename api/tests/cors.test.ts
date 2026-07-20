@@ -16,13 +16,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
  */
 
 const BASE_ENV = {
-  PORT: '6050',
+  PORT: '6080',
   SESSION_SECRET: 'a'.repeat(64),
   NODE_ENV: 'test',
   MFA_ENABLED: 'true',
 } as const;
 
-const ALLOWED = 'http://localhost:6051';
+const ALLOWED = 'http://localhost:6081';
 
 async function importBuildApp(): Promise<
   typeof import('../src/app.js')['buildApp']
@@ -179,18 +179,18 @@ describe('CORS plugin', () => {
     for (const [k, v] of Object.entries(BASE_ENV)) vi.stubEnv(k, v);
     // Note the trailing slash on the configured origin — INFRA-004's
     // canonicaliseOrigin() strips it before the value reaches the CORS layer.
-    vi.stubEnv('ALLOWED_ORIGINS', 'http://localhost:6051/');
+    vi.stubEnv('ALLOWED_ORIGINS', 'http://localhost:6081/');
     const buildApp = await importBuildApp();
     const app = await buildApp();
     try {
       const res = await app.inject({
         method: 'GET',
         url: '/api/health',
-        headers: { origin: 'http://localhost:6051' },
+        headers: { origin: 'http://localhost:6081' },
       });
       expect(res.statusCode).toBe(200);
       expect(res.headers['access-control-allow-origin']).toBe(
-        'http://localhost:6051',
+        'http://localhost:6081',
       );
       expect(res.headers['access-control-allow-credentials']).toBe('true');
     } finally {
@@ -200,7 +200,7 @@ describe('CORS plugin', () => {
 
   it('allows each origin in a comma-separated ALLOWED_ORIGINS list', async () => {
     for (const [k, v] of Object.entries(BASE_ENV)) vi.stubEnv(k, v);
-    const first = 'http://localhost:6051';
+    const first = 'http://localhost:6081';
     const second = 'https://staging.example.com';
     vi.stubEnv('ALLOWED_ORIGINS', `${first}, ${second}`);
     const buildApp = await importBuildApp();
@@ -225,7 +225,7 @@ describe('CORS plugin', () => {
     for (const [k, v] of Object.entries(BASE_ENV)) vi.stubEnv(k, v);
     vi.stubEnv(
       'ALLOWED_ORIGINS',
-      'http://localhost:6051,https://staging.example.com',
+      'http://localhost:6081,https://staging.example.com',
     );
     const buildApp = await importBuildApp();
     const app = await buildApp();

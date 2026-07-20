@@ -84,8 +84,8 @@ These operator constraints shape every build decision in this project:
 - **Drizzle schema is PROTECTED.** `/api/src/db/schema/` is modified only by
   stories that explicitly name a schema change; every change generates a
   drizzle-kit migration and an ADR-style note in `docs/architecture.md`.
-- **Dev port range is 6050–6059.** No Corral Talent dev process binds a port outside
-  this range. (Sits adjacent to radar's 6010–6019.)
+- **Dev port range is 6080–6089.** No Corral Talent dev process binds a port outside
+  this range.
 
 ---
 

@@ -26,12 +26,12 @@ const PASSWORD = process.env['UAT_ADMIN_PASSWORD'] ?? 'UatAdmin1!';
 
 const driver = new BetterAuthTotpDriver(
   path.join(os.tmpdir(), 'uat-admin.json'),
-  process.env['API_BASE'] ?? 'http://localhost:6050',
+  process.env['API_BASE'] ?? 'http://localhost:6080',
 );
 
 export const storageStatePath = driver.storageStatePath;
 
-const BASE_URL = process.env['BASE_URL'] ?? 'http://localhost:6051';
+const BASE_URL = process.env['BASE_URL'] ?? 'http://localhost:6081';
 
 export async function setup(): Promise<void> {
   const sidecarPath = `${storageStatePath}.totp-secret.txt`;

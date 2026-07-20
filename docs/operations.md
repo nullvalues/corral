@@ -16,8 +16,8 @@ All env vars are read from `api/src/lib/config.ts`. The following table document
 | Variable | Type | Required | Default | Example | Notes |
 |----------|------|----------|---------|---------|-------|
 | `SESSION_SECRET` | string (≥64 chars) | Yes | none | `openssl rand -hex 32 \| tr -d '\n'; openssl rand -hex 32` | Generate with: `openssl rand -hex 32` twice, concatenate both (64 hex chars total). Validates at startup; malformed value exits non-zero. Treat as secret — never log or commit. |
-| `ALLOWED_ORIGINS` | comma-separated URL list | Yes | none | `http://localhost:6051` (dev) or `https://app.example.com,https://staging.example.com` (prod) | Comma-separated allow-list of UI origins. CORS requests whose `Origin` is not a member of the list are rejected. A single URL (no comma) is a one-element list. Each entry is trimmed; trailing slash and default ports (`:80` for http, `:443` for https) are normalised out at startup; every entry must be a valid URL and the list must be non-empty. The legacy singular `ALLOWED_ORIGIN` is still read as a fallback when `ALLOWED_ORIGINS` is unset (deprecated). |
-| `PORT` | integer | No | `6050` | `6050` | Port the API listens on. Must be in range `6050–6059` (project constraint). Validates at startup. |
+| `ALLOWED_ORIGINS` | comma-separated URL list | Yes | none | `http://localhost:6081` (dev) or `https://app.example.com,https://staging.example.com` (prod) | Comma-separated allow-list of UI origins. CORS requests whose `Origin` is not a member of the list are rejected. A single URL (no comma) is a one-element list. Each entry is trimmed; trailing slash and default ports (`:80` for http, `:443` for https) are normalised out at startup; every entry must be a valid URL and the list must be non-empty. The legacy singular `ALLOWED_ORIGIN` is still read as a fallback when `ALLOWED_ORIGINS` is unset (deprecated). |
+| `PORT` | integer | No | `6080` | `6080` | Port the API listens on. Must be in range `6080–6089` (project constraint). Validates at startup. |
 | `NODE_ENV` | enum: `development` \| `test` \| `production` | No | `development` | `production` | Controls feature gates (e.g. MFA mandatory in production, console mailer forbidden in production). |
 | `MFA_ENABLED` | boolean (`true` \| `false`) | No | `true` | `true` | Mandatory TOTP-based multi-factor auth. MUST be `true` in production (enforced at config validation). |
 | `MFA_GRACE_HOURS` | integer ≥0 | No | `24` | `24` | Grace period (hours) before new users must enrol in TOTP. 0 = mandatory immediate enrolment. |
@@ -107,7 +107,7 @@ Follow these steps in order to bring up a fresh environment:
 
 8. **Verify health**
    ```bash
-   curl http://localhost:6050/api/health
+   curl http://localhost:6080/api/health
    ```
    Should return `{"status":"ok"}` (HTTP 200). If the service is not ready, check the logs:
    ```bash
@@ -144,7 +144,7 @@ When deploying a new version of the application:
 
 5. **Verify health**
    ```bash
-   curl http://localhost:6050/api/health
+   curl http://localhost:6080/api/health
    ```
 
 ---

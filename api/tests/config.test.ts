@@ -77,8 +77,8 @@ describe('config.ts', () => {
   it('parses a fully-valid env into the typed config object', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
-      PORT: '6050',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
+      PORT: '6080',
       NODE_ENV: 'test',
       MFA_ENABLED: 'true',
       DATABASE_URL: VALID_DB_URL,
@@ -86,8 +86,8 @@ describe('config.ts', () => {
     });
     const { config } = await importConfig();
     expect(config.SESSION_SECRET).toBe(VALID_SECRET);
-    expect(config.ALLOWED_ORIGINS).toEqual(['http://localhost:6051']);
-    expect(config.PORT).toBe(6050);
+    expect(config.ALLOWED_ORIGINS).toEqual(['http://localhost:6081']);
+    expect(config.PORT).toBe(6080);
     expect(config.NODE_ENV).toBe('test');
     expect(config.MFA_ENABLED).toBe(true);
     // Type-level: PORT must be a number, MFA_ENABLED a boolean. The runtime
@@ -99,7 +99,7 @@ describe('config.ts', () => {
   it('throws ConfigError naming SESSION_SECRET when the secret is too short', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: 'a'.repeat(63),
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
     });
     expect(err.name).toBe('ConfigError');
     expect(err.message).toMatch(/SESSION_SECRET/);
@@ -117,21 +117,21 @@ describe('config.ts', () => {
   it('canonicalises ALLOWED_ORIGINS with a trailing slash', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051/',
+      ALLOWED_ORIGINS: 'http://localhost:6081/',
       DATABASE_URL: VALID_DB_URL,
     });
     const { config } = await importConfig();
-    expect(config.ALLOWED_ORIGINS).toEqual(['http://localhost:6051']);
+    expect(config.ALLOWED_ORIGINS).toEqual(['http://localhost:6081']);
   });
 
   it('canonicalises ALLOWED_ORIGINS without a trailing slash to the same value', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
     });
     const { config } = await importConfig();
-    expect(config.ALLOWED_ORIGINS).toEqual(['http://localhost:6051']);
+    expect(config.ALLOWED_ORIGINS).toEqual(['http://localhost:6081']);
   });
 
   it('drops a default HTTP port from ALLOWED_ORIGINS (drift guard)', async () => {
@@ -157,33 +157,43 @@ describe('config.ts', () => {
   it('rejects PORT=5000 (outside asp dev range)', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       PORT: '5000',
     });
     expect(err.name).toBe('ConfigError');
     expect(err.message).toMatch(/PORT/);
   });
 
-  it('accepts PORT=6050', async () => {
+  it('rejects PORT=6055 (former dev range, now outside 6080–6089)', async () => {
+    const err = await expectConfigError({
+      SESSION_SECRET: VALID_SECRET,
+      ALLOWED_ORIGINS: 'http://localhost:6081',
+      PORT: '6055',
+    });
+    expect(err.name).toBe('ConfigError');
+    expect(err.message).toMatch(/PORT/);
+  });
+
+  it('accepts PORT=6080', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
-      PORT: '6050',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
+      PORT: '6080',
       DATABASE_URL: VALID_DB_URL,
     });
     const { config } = await importConfig();
-    expect(config.PORT).toBe(6050);
+    expect(config.PORT).toBe(6080);
   });
 
-  it('defaults PORT to 6050 when unset', async () => {
+  it('defaults PORT to 6080 when unset', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       // PORT deliberately unset
     });
     const { config } = await importConfig();
-    expect(config.PORT).toBe(6050);
+    expect(config.PORT).toBe(6080);
   });
 
   it('never includes the SESSION_SECRET value in error messages', async () => {
@@ -206,7 +216,7 @@ describe('config.ts', () => {
     const shortSecret = 'b'.repeat(40);
     const err2 = await expectConfigError({
       SESSION_SECRET: shortSecret,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
     });
     expect(err2.message).not.toContain(shortSecret);
 
@@ -217,7 +227,7 @@ describe('config.ts', () => {
     const tenCharSecret = 'x'.repeat(10);
     const err3 = await expectConfigError({
       SESSION_SECRET: tenCharSecret,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
     });
     expect(err3.name).toBe('ConfigError');
     // The submitted value must never appear in the output.
@@ -279,7 +289,7 @@ describe('config.ts', () => {
   it('accepts MFA_ENABLED=false when NODE_ENV=development', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       NODE_ENV: 'development',
       MFA_ENABLED: 'false',
       DATABASE_URL: VALID_DB_URL,
@@ -296,7 +306,7 @@ describe('config.ts', () => {
   it('defaults MAILER_PROVIDER to "console" when unset', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       // MAILER_PROVIDER deliberately unset
     });
@@ -307,7 +317,7 @@ describe('config.ts', () => {
   it('accepts MAILER_PROVIDER="console" explicitly', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       MAILER_PROVIDER: 'console',
     });
@@ -318,7 +328,7 @@ describe('config.ts', () => {
   it('rejects an unknown MAILER_PROVIDER value', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       MAILER_PROVIDER: 'sendgrid',
     });
@@ -440,7 +450,7 @@ describe('config.ts', () => {
   it('rejects MAILER_PROVIDER=resend without MAILER_FROM', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       MAILER_PROVIDER: 'resend',
       // MAILER_FROM deliberately unset
@@ -453,7 +463,7 @@ describe('config.ts', () => {
   it('rejects MAILER_PROVIDER=resend without RESEND_API_KEY', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       MAILER_PROVIDER: 'resend',
       MAILER_FROM: 'noreply@example.com',
@@ -466,7 +476,7 @@ describe('config.ts', () => {
   it('rejects MAILER_FROM with an invalid email format', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       MAILER_PROVIDER: 'resend',
       MAILER_FROM: 'not-an-email',
@@ -480,7 +490,7 @@ describe('config.ts', () => {
     const secretKey = 're_super_secret_key_that_must_not_appear_in_any_error_message_ever';
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       MAILER_PROVIDER: 'resend',
       MAILER_FROM: 'noreply@example.com',
@@ -496,7 +506,7 @@ describe('config.ts', () => {
     const fromAddress = 'should-not-leak-this-address@example.com';
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       MAILER_PROVIDER: 'resend',
       MAILER_FROM: fromAddress,
@@ -511,7 +521,7 @@ describe('config.ts', () => {
     // regardless of NODE_ENV.
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       NODE_ENV: 'development',
       DATABASE_URL: VALID_DB_URL,
       MAILER_PROVIDER: 'resend',
@@ -529,7 +539,7 @@ describe('config.ts', () => {
   it('defaults SESSION_DURATION_HOURS to 168 when unset', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       // SESSION_DURATION_HOURS deliberately unset
     });
@@ -540,7 +550,7 @@ describe('config.ts', () => {
   it('parses SESSION_DURATION_HOURS=8 to the number 8', async () => {
     stubEnv({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       SESSION_DURATION_HOURS: '8',
     });
@@ -552,7 +562,7 @@ describe('config.ts', () => {
   it('rejects SESSION_DURATION_HOURS=0 (must be positive)', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       SESSION_DURATION_HOURS: '0',
     });
@@ -563,7 +573,7 @@ describe('config.ts', () => {
   it('rejects SESSION_DURATION_HOURS=-1 (must be positive)', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       SESSION_DURATION_HOURS: '-1',
     });
@@ -574,7 +584,7 @@ describe('config.ts', () => {
   it('rejects SESSION_DURATION_HOURS=abc (non-numeric)', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       SESSION_DURATION_HOURS: 'abc',
     });
@@ -585,7 +595,7 @@ describe('config.ts', () => {
   it('rejects SESSION_DURATION_HOURS=1.5 (must be an integer)', async () => {
     const err = await expectConfigError({
       SESSION_SECRET: VALID_SECRET,
-      ALLOWED_ORIGINS: 'http://localhost:6051',
+      ALLOWED_ORIGINS: 'http://localhost:6081',
       DATABASE_URL: VALID_DB_URL,
       SESSION_DURATION_HOURS: '1.5',
     });

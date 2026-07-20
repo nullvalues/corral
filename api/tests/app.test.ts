@@ -15,9 +15,9 @@ import type { AiClient } from '../src/lib/ai.js';
  * matching the `*.test.ts` glob (acceptance criterion in INFRA-002).
  */
 const ENV_STUBS = {
-  PORT: '6050',
+  PORT: '6080',
   SESSION_SECRET: 'a'.repeat(64),
-  ALLOWED_ORIGINS: 'http://localhost:6051',
+  ALLOWED_ORIGINS: 'http://localhost:6081',
   NODE_ENV: 'test',
   MFA_ENABLED: 'true',
   FOO: 'eslint-rule-exemption-canary',

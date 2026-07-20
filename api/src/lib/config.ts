@@ -29,7 +29,7 @@ import { ConfigError } from './errors.js';
  *   - drop the default port for the scheme (http:80, https:443)
  *   - drop a lone trailing slash on the pathname (i.e. when path is `/`)
  *
- * Both `http://localhost:6051/` and `http://localhost:6051` resolve to the
+ * Both `http://localhost:6081/` and `http://localhost:6081` resolve to the
  * same canonical entry in the exported `config.ALLOWED_ORIGINS` array.
  */
 function isValidUrl(raw: string): boolean {
@@ -137,9 +137,9 @@ const envSchema = z
       z.coerce
         .number()
         .int()
-        .min(6050, 'PORT must be in the Corral Talent dev range 6050–6059')
-        .max(6059, 'PORT must be in the Corral Talent dev range 6050–6059')
-        .default(6050),
+        .min(6080, 'PORT must be in the Corral Talent dev range 6080–6089')
+        .max(6089, 'PORT must be in the Corral Talent dev range 6080–6089')
+        .default(6080),
     ),
     NODE_ENV: z
       .enum(['development', 'test', 'production'])

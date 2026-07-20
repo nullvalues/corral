@@ -46,7 +46,7 @@ jobs:
           # If a CI log ever leaks this value, no rotation is needed — it is
           # documented as a fixture in INFRA-008.
           SESSION_SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
-          ALLOWED_ORIGIN: http://localhost:6051
+          ALLOWED_ORIGIN: http://localhost:6081
           MFA_ENABLED: "true"
           NODE_ENV: test
 
@@ -56,7 +56,7 @@ jobs:
         run: pnpm --filter @asp/api test:unit
         env:
           SESSION_SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
-          ALLOWED_ORIGIN: http://localhost:6051
+          ALLOWED_ORIGIN: http://localhost:6081
           MFA_ENABLED: "true"
           NODE_ENV: test
 
@@ -67,7 +67,7 @@ jobs:
         run: pnpm --filter @asp/api test:integration
         env:
           SESSION_SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
-          ALLOWED_ORIGIN: http://localhost:6050
+          ALLOWED_ORIGIN: http://localhost:6080
           MFA_ENABLED: "true"
           DATABASE_URL: postgres://ci:ci@localhost:5432/asp_test
           DATABASE_URL_TEST: postgres://ci:ci@localhost:5432/asp_test
@@ -99,7 +99,7 @@ jobs:
           ALLOWED_ORIGIN: http://localhost:3000
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
           DATABASE_URL_TEST: postgresql://postgres:postgres@localhost:5432/test
-          PORT: "6050"
+          PORT: "6080"
           MFA_ENABLED: "true"
           NODE_ENV: development
 
@@ -158,19 +158,19 @@ jobs:
             -e DATABASE_URL=postgres://ci:ci@localhost:5432/asp_test \
             -e SESSION_SECRET=0000000000000000000000000000000000000000000000000000000000000000 \
             -e MFA_ENABLED=true \
-            -e PORT=6050 \
+            -e PORT=6080 \
             -e STATIC_UI_ROOT=/app/ui/dist \
             -e MAILER_PROVIDER=resend \
             -e RESEND_API_KEY=ci-dummy-key \
             -e MAILER_FROM=ci@example.com \
-            -e ALLOWED_ORIGIN=http://localhost:6051 \
-            -e BETTER_AUTH_URL=http://localhost:6050 \
+            -e ALLOWED_ORIGIN=http://localhost:6081 \
+            -e BETTER_AUTH_URL=http://localhost:6080 \
             asp:local serve
 
       - name: Wait for health
         run: |
           for i in $(seq 1 30); do
-            curl -sf http://localhost:6050/api/health && break || sleep 1
+            curl -sf http://localhost:6080/api/health && break || sleep 1
           done
 
       - name: Dump container logs (debug)
@@ -178,11 +178,11 @@ jobs:
         run: docker logs asp-smoke || true
 
       - name: Assert health endpoint returns 200
-        run: curl -sf http://localhost:6050/api/health
+        run: curl -sf http://localhost:6080/api/health
 
       - name: Assert UI root returns text/html
         run: |
-          curl -sf -I http://localhost:6050/ | grep -i "content-type: text/html"
+          curl -sf -I http://localhost:6080/ | grep -i "content-type: text/html"
 
       - name: Teardown
         if: always()
@@ -243,18 +243,18 @@ jobs:
         run: pnpm test:e2e
         env:
           CI: "true"
-          BASE_URL: http://localhost:6050
-          API_BASE: http://localhost:6050
+          BASE_URL: http://localhost:6080
+          API_BASE: http://localhost:6080
           DATABASE_URL: postgres://ci:ci@localhost:5432/asp_test
           CONTAINER_IMAGE: asp:local
           NODE_ENV: production
           SESSION_SECRET: "0000000000000000000000000000000000000000000000000000000000000000"
           MFA_ENABLED: "true"
-          PORT: "6050"
+          PORT: "6080"
           STATIC_UI_ROOT: /app/ui/dist
           MAILER_PROVIDER: console
           MAILER_FROM: ci@example.com
-          ALLOWED_ORIGIN: http://localhost:6050
+          ALLOWED_ORIGIN: http://localhost:6080
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4

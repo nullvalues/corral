@@ -11,7 +11,7 @@
 import type { APIRequestContext, Page } from '@playwright/test';
 import { generateSync } from 'otplib';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6080';
 
 /**
  * Sign up a new user and enrol TOTP via the Better Auth HTTP endpoints

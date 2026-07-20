@@ -328,10 +328,10 @@ app-layer-only with an external DB.
 
 ---
 
-### Pinned dev port range 6050–6059
+### Pinned dev port range 6080–6089
 
 **Rule:** All Corral Talent dev servers (API, UI, future services) bind ports in
-6050–6059. The mapping is recorded in `docs/architecture.md`. No Corral Talent dev
+6080–6089. The mapping is recorded in `docs/architecture.md`. No Corral Talent dev
 process uses a port outside this range.
 
 **Protects:** A collision-free dev environment when Corral Talent runs alongside
@@ -351,7 +351,7 @@ ports because they never open a real connection.
 **Rule:** `ALLOWED_ORIGINS` (a comma-separated allow-list) is always required, in
 every environment. There is no wildcard origin default. A single URL is a
 one-element list; multiple origins are comma-separated. `.env.example` sets it to
-the local UI origin (e.g. `http://localhost:6051`). The config layer exits if it
+the local UI origin (e.g. `http://localhost:6081`). The config layer exits if it
 is unset or empty. The legacy singular `ALLOWED_ORIGIN` is read as a fallback
 (deprecated).
 

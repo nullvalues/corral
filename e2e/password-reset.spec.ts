@@ -16,7 +16,7 @@ import { randomUUID } from 'crypto';
 import { generateSync } from 'otplib';
 import { extractResetUrl } from './fixtures/logCapture.js';
 
-const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6050';
+const API_BASE = process.env['API_BASE'] ?? 'http://localhost:6080';
 
 const OLD_PASSWORD = 'Test1234!';
 const NEW_PASSWORD = 'NewP@ssw0rd!';

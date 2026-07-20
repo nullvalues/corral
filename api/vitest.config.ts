@@ -64,9 +64,9 @@ export default defineConfig({
           include: ['tests/**/*.test.ts'],
           exclude: ['tests/**/*.integration.test.ts', 'tests/api-integration.test.ts'],
           env: {
-            PORT: '6050',
+            PORT: '6080',
             SESSION_SECRET: 'a'.repeat(64),
-            ALLOWED_ORIGINS: 'http://localhost:6051',
+            ALLOWED_ORIGINS: 'http://localhost:6081',
             NODE_ENV: 'test',
             MFA_ENABLED: 'true',
             DATABASE_URL: 'postgresql://asp:asp@localhost:5432/asp',
@@ -92,9 +92,9 @@ export default defineConfig({
           // The unit project is unaffected and remains fully parallel.
           fileParallelism: false,
           env: {
-            PORT: '6050',
+            PORT: '6080',
             SESSION_SECRET: 'a'.repeat(64),
-            ALLOWED_ORIGINS: 'http://localhost:6051',
+            ALLOWED_ORIGINS: 'http://localhost:6081',
             NODE_ENV: 'test',
             MFA_ENABLED: 'true',
             // DATABASE_URL intentionally omitted — integration tests must use
