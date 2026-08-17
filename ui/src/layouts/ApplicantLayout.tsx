@@ -3,9 +3,11 @@ import { BottomTabBar } from '../components/BottomTabBar.js';
 import { useUserRoles } from '../hooks/useUserRoles.js';
 
 export function ApplicantLayout() {
-  const { isApplicant, isLoading } = useUserRoles();
+  const { isAdmin, isApplicant, isLoading } = useUserRoles();
   if (isLoading) return <div>Loading…</div>;
-  if (!isApplicant) return <Navigate to="/admin" replace />;
+  // Non-applicants belong in a workspace of their own: admins in /admin,
+  // everyone else (mentor-only accounts hold no system role) in /mentor.
+  if (!isApplicant) return <Navigate to={isAdmin ? '/admin' : '/mentor'} replace />;
 
   return (
     <div className="min-h-screen bg-app-bg">

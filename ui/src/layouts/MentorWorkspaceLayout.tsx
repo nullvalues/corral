@@ -3,6 +3,7 @@ import type { ReactElement } from 'react';
 import { MentorLevelBadge } from '../components/MentorLevelBadge.js';
 import { BrandMark } from '../components/BrandMark.js';
 import { useMe } from '../hooks/useMe.js';
+import { useUserRoles } from '../hooks/useUserRoles.js';
 
 const iconProps = {
   width: 20,
@@ -47,8 +48,22 @@ const dashboardRow = ({ isActive }: { isActive: boolean }) =>
 
 export function MentorWorkspaceLayout(): ReactElement {
   const { data, isLoading } = useMe();
+  const { isAdmin, isApplicant } = useUserRoles();
   if (isLoading) return <div>Loading…</div>;
-  if (!data?.hasMentorGrants) return <Navigate to="/home" replace />;
+  if (!data?.hasMentorGrants) {
+    // Bounce only to a shell this caller can actually occupy. A role-less,
+    // grant-less account has none, so it terminates here instead of
+    // ping-ponging with ApplicantLayout's non-applicant redirect.
+    if (isApplicant) return <Navigate to="/home" replace />;
+    if (isAdmin) return <Navigate to="/admin" replace />;
+    return (
+      <div className="min-h-screen bg-app-bg p-6">
+        <p role="status">
+          This account has no active mentor grants and no workspace assigned.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen w-full bg-app-bg">

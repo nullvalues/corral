@@ -72,6 +72,21 @@ describe('ApplicantLayout', () => {
     expect(screen.queryByTestId('navigate-redirect')).not.toBeInTheDocument();
   });
 
+  it('redirects a role-less account to /mentor, not back into the applicant shell', async () => {
+    // Mentor-only accounts hold no system role at all (see
+    // api/src/scripts/stripApplicantRole.ts), so this must not bounce to a
+    // route that would send them straight back here.
+    mockMe([]);
+    renderLayout();
+
+    await waitFor(() => {
+      const el = screen.getByTestId('navigate-redirect');
+      expect(el).toBeInTheDocument();
+      expect(el).toHaveAttribute('data-to', '/mentor');
+    });
+    expect(screen.queryByText('applicant outlet content')).not.toBeInTheDocument();
+  });
+
   it('redirects to /admin for an admin-only account (no applicant role)', async () => {
     mockMe(['admin']);
     renderLayout();

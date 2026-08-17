@@ -27,11 +27,11 @@ vi.mock('react-router-dom', async (importOriginal) => {
   };
 });
 
-function mockMe(hasMentorGrants: boolean, isLoading = false) {
+function mockMe(hasMentorGrants: boolean, isLoading = false, roles: string[] = ['applicant']) {
   vi.mocked(useMe).mockReturnValue({
     data: isLoading
       ? undefined
-      : { user: { id: 'u1', email: 'm@b.com', name: 'M' }, roles: ['applicant'], hasMentorGrants },
+      : { user: { id: 'u1', email: 'm@b.com', name: 'M' }, roles, hasMentorGrants },
     isLoading,
   } as unknown as ReturnType<typeof useMe>);
 }
@@ -70,6 +70,27 @@ describe('MentorWorkspaceLayout', () => {
       const el = screen.getByTestId('navigate-redirect');
       expect(el).toBeInTheDocument();
       expect(el).toHaveAttribute('data-to', '/home');
+    });
+  });
+
+  it('terminates instead of redirecting when the caller has neither grants nor a role', async () => {
+    // ApplicantLayout sends role-less accounts here; bouncing back to /home
+    // would put the two guards in an infinite redirect loop.
+    mockMe(false, false, []);
+    renderLayout();
+
+    await waitFor(() => {
+      expect(screen.getByRole('status')).toHaveTextContent('no active mentor grants');
+    });
+    expect(screen.queryByTestId('navigate-redirect')).not.toBeInTheDocument();
+  });
+
+  it('redirects a grant-less admin to /admin rather than the applicant shell', async () => {
+    mockMe(false, false, ['admin']);
+    renderLayout();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('navigate-redirect')).toHaveAttribute('data-to', '/admin');
     });
   });
 
