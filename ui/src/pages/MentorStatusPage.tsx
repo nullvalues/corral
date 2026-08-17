@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMyApplicantGrants } from '../hooks/useMyApplicantGrants.js';
-import { useMe } from '../hooks/useMe.js';
+import { useUserRoles } from '../hooks/useUserRoles.js';
 import { RequestMentorModal } from '../components/RequestMentorModal.js';
 
 function mentorInitials(name: string): string {
@@ -11,12 +11,11 @@ function mentorInitials(name: string): string {
 }
 
 export function MentorStatusPage() {
-  const { data: me } = useMe();
   const { data: myGrants, isLoading: grantsLoading } = useMyApplicantGrants();
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  const isAdmin = me?.roles?.includes('admin') ?? false;
+  const { isAdmin } = useUserRoles();
 
   // Find most-relevant grant (active > pending > none)
   const grantsArray = Array.isArray(myGrants) ? myGrants : [];

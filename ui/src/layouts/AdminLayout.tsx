@@ -1,10 +1,10 @@
 import { Link, Navigate, Outlet } from 'react-router-dom';
-import { useMe } from '../hooks/useMe.js';
+import { useUserRoles } from '../hooks/useUserRoles.js';
 
 export function AdminLayout() {
-  const { data, isLoading } = useMe();
+  const { isAdmin, isLoading } = useUserRoles();
   if (isLoading) return <div>Loading…</div>;
-  if (!data?.roles.includes('admin')) return <Navigate to="/experiences" replace />;
+  if (!isAdmin) return <Navigate to="/experiences" replace />;
   return (
     <div className="min-h-screen bg-surface-default">
       <nav className="flex gap-4 border-b border-surface-muted px-6 py-3 text-sm">

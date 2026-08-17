@@ -3,6 +3,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../lib/queryKeys.js';
 import { useMe } from '../hooks/useMe.js';
+import { useUserRoles } from '../hooks/useUserRoles.js';
 import { ApplicantPicker } from '../components/ApplicantPicker.js';
 import { NotificationBell } from '../components/NotificationBell.js';
 import { BrandMark } from '../components/BrandMark.js';
@@ -16,6 +17,7 @@ interface Session {
 export function ProtectedLayout() {
   const navigate = useNavigate();
   const { data: me, isLoading: meLoading } = useMe();
+  const { isAdmin } = useUserRoles();
 
   const { data: session, isLoading, error } = useQuery({
     queryKey: queryKeys.session,
@@ -67,7 +69,6 @@ export function ProtectedLayout() {
     return <div />;
   }
 
-  const isAdmin = me?.roles?.includes('admin') ?? false;
   const hasMentorGrants = me?.hasMentorGrants ?? false;
 
   async function handleSignOut() {

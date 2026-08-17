@@ -10,6 +10,19 @@ vi.mock('./hooks/useMentorImpact.js', () => ({
   useMentorImpact: () => ({ data: undefined, isLoading: true, isError: false }),
 }));
 
+// MentorWorkspaceLayout gates on hasMentorGrants (UI-906); give it a resolved,
+// grant-holding session so the mentor-workspace-shell tests render past the guard.
+vi.mock('./hooks/useMe.js', () => ({
+  useMe: () => ({
+    data: {
+      user: { id: 'mentor-1', email: 'mentor@example.com', name: 'Mentor' },
+      roles: ['applicant'],
+      hasMentorGrants: true,
+    },
+    isLoading: false,
+  }),
+}));
+
 /**
  * UI-001 — router shell tests.
  *

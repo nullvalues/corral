@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useCurrentUserId } from '../hooks/useCurrentUserId.js';
 import { useMe } from '../hooks/useMe.js';
+import { useUserRoles } from '../hooks/useUserRoles.js';
 import { useRollup } from '../hooks/useRollup.js';
 import { useExperiences } from '../hooks/useExperiences.js';
 import { useCategories } from '../hooks/useCategories.js';
@@ -21,6 +22,7 @@ export function HomePage() {
   const navigate = useNavigate();
   const userId = useCurrentUserId();
   const { data: me } = useMe();
+  const { isAdmin } = useUserRoles();
   const { data: rollup = [] } = useRollup(userId);
   const { data: experiences, isSuccess } = useExperiences(userId);
   const { data: categories = [] } = useCategories();
@@ -69,7 +71,7 @@ export function HomePage() {
       <HomeEmptyState
         name={userName}
         categories={active.map((c) => ({ id: c.id, name: c.name, goalHours: c.goalHours }))}
-        isAdmin={me?.roles.includes('admin') ?? false}
+        isAdmin={isAdmin}
       />
     );
   }

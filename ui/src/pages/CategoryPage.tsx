@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '../lib/queryKeys.js';
 import { useCurrentUserId } from '../hooks/useCurrentUserId.js';
 import { useMentorContext } from '../layouts/MentorScopeLayout.js';
-import { useMe } from '../hooks/useMe.js';
+import { useUserRoles } from '../hooks/useUserRoles.js';
 import { useExperiences } from '../hooks/useExperiences.js';
 import { useRollup } from '../hooks/useRollup.js';
 import type { paths } from '../api-types.js';
@@ -59,10 +59,9 @@ function mapExperienceToFormDefaults(exp: Experience): Partial<ExperienceFormVal
 export function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
   const mentorCtx = useMentorContext();
-  const { data: meData } = useMe();
+  const { isAdmin } = useUserRoles();
   const currentUserId = useCurrentUserId();
   const userId = mentorCtx?.grant.applicantUserId ?? currentUserId;
-  const isAdmin = meData?.roles?.includes('admin') ?? false;
   const canWrite = !isAdmin && (mentorCtx ? mentorCtx.grant.permissions.includes('write') : true);
   const [detailsId, setDetailsId] = useState<string | null>(null);
   // null = closed, 'create' = new experience form, string = experienceId for edit

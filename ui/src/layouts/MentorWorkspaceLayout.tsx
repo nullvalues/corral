@@ -1,7 +1,8 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { Navigate, NavLink, Outlet } from 'react-router-dom';
 import type { ReactElement } from 'react';
 import { MentorLevelBadge } from '../components/MentorLevelBadge.js';
 import { BrandMark } from '../components/BrandMark.js';
+import { useMe } from '../hooks/useMe.js';
 
 const iconProps = {
   width: 20,
@@ -45,6 +46,10 @@ const dashboardRow = ({ isActive }: { isActive: boolean }) =>
   ].join(' ');
 
 export function MentorWorkspaceLayout(): ReactElement {
+  const { data, isLoading } = useMe();
+  if (isLoading) return <div>Loading…</div>;
+  if (!data?.hasMentorGrants) return <Navigate to="/home" replace />;
+
   return (
     <div className="flex min-h-screen w-full bg-app-bg">
       <aside className="flex w-[226px] shrink-0 flex-col bg-ink px-3 py-5 max-[900px]:w-16 max-[900px]:px-2">

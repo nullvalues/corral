@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import type { ReactElement } from 'react';
+import { useUserRoles } from '../hooks/useUserRoles.js';
 
 const tab = ({ isActive }: { isActive: boolean }) =>
   [
@@ -59,6 +60,11 @@ function PersonIcon(): ReactElement {
 }
 
 export function BottomTabBar() {
+  // Experience management (denyRole('admin')) and applicant mentor status are
+  // not applicable to admin-only accounts — hiding them here keeps nav from
+  // ever leading to an API 403 or MentorStatusPage's blank admin state (UI-907).
+  const { isAdmin } = useUserRoles();
+
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-[640px] border-t border-hairline bg-card"
@@ -68,14 +74,18 @@ export function BottomTabBar() {
         <HomeIcon />
         Home
       </NavLink>
-      <NavLink to="/experiences" className={tab}>
-        <GridIcon />
-        Categories
-      </NavLink>
-      <NavLink to="/mentor-status" className={tab}>
-        <MentorIcon />
-        Mentor
-      </NavLink>
+      {!isAdmin && (
+        <NavLink to="/experiences" className={tab}>
+          <GridIcon />
+          Categories
+        </NavLink>
+      )}
+      {!isAdmin && (
+        <NavLink to="/mentor-status" className={tab}>
+          <MentorIcon />
+          Mentor
+        </NavLink>
+      )}
       <NavLink to="/profile" className={tab}>
         <PersonIcon />
         Profile
